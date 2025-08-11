@@ -1,63 +1,65 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
-  private messages: Message[] = [
-    {
-      id: randomUUID(),
-      text: 'Hello World',
-      sender: 'John',
-      to: 'Jane',
-      isRead: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ];
+  constructor(
+    @InjectRepository(Message)
+    private readonly messagesRepository: Repository<Message>,
+  ) {}
 
-  create(createMessageDto: CreateMessageDto) {
-    const newMessage: Message = {
-      id: randomUUID(),
-      ...createMessageDto,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isRead: false,
-    };
-    this.messages.push(newMessage);
-    return newMessage;
+  // private messages: Message[] = [
+  //   {
+  //     id: randomUUID(),
+  //     text: 'Hello World',
+  //     sender: 'John',
+  //     to: 'Jane',
+  //     isRead: false,
+  //     createdAt: new Date(),
+  //     updatedAt: new Date(),
+  //   },
+  // ];
+
+  async create(createMessageDto: CreateMessageDto) {
+    const newMessage = this.messagesRepository.create(createMessageDto);
+    return await this.messagesRepository.save(newMessage);
   }
 
-  findAll() {
-    return this.messages;
+  async findAll() {
+    return await this.messagesRepository.find();
   }
 
-  findOne(id: string) {
-    const message = this.messages.find((message) => message.id === id);
+  async findOne(id: string) {
+    const message = await this.messagesRepository.findOne({ where: { id } });
     if (!message) return this.throwNotFoundException();
 
     return message;
   }
 
-  searchQuery(limite: number, offset: number) {
-    return this.messages.slice(offset, offset + limite);
+  async searchQuery(limite: number, offset: number) {
+    return await this.messagesRepository.find({
+      skip: offset,
+      take: limite,
+    });
   }
 
-  update(id: string, updateMessageDto: UpdateMessageDto) {
-    const message = this.messages.find((message) => message.id === id);
+  async update(id: string, updateMessageDto: UpdateMessageDto) {
+    const message = await this.messagesRepository.findOne({ where: { id } });
     if (!message) return this.throwNotFoundException();
 
     Object.assign(message, updateMessageDto);
-    return message;
+    return await this.messagesRepository.save(message);
   }
 
-  remove(id: string) {
-    const index = this.messages.findIndex((message) => message.id === id);
-    if (index === -1) return this.throwNotFoundException();
+  async remove(id: string) {
+    const message = await this.messagesRepository.findOne({ where: { id } });
+    if (!message) return this.throwNotFoundException();
 
-    this.messages.splice(index, 1);
+    await this.messagesRepository.remove(message);
     return { deleted: true };
   }
 
