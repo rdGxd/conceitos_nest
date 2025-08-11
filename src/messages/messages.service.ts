@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
@@ -18,9 +18,8 @@ export class MessagesService {
   ];
 
   create(createMessageDto: CreateMessageDto) {
-    const id = this.lastId++;
     const newMessage: Message = {
-      id,
+      id: ++this.lastId,
       ...createMessageDto,
       date: new Date(),
     };
@@ -33,7 +32,10 @@ export class MessagesService {
   }
 
   findOne(id: number) {
-    return this.messages.find((message) => message.id === id);
+    const message = this.messages.find((message) => message.id === id);
+    if (!message) return this.throwNotFoundException();
+
+    return message;
   }
 
   searchQuery(limite: number, offset: number) {
@@ -42,19 +44,22 @@ export class MessagesService {
 
   update(id: number, updateMessageDto: UpdateMessageDto) {
     const message = this.messages.find((message) => message.id === id);
-    if (!message) {
-      throw new Error('Message not found');
-    }
+    if (!message) return this.throwNotFoundException();
+
     Object.assign(message, updateMessageDto);
     return message;
   }
 
   remove(id: number) {
     const index = this.messages.findIndex((message) => message.id === id);
-    if (index === -1) {
-      throw new Error('Message not found');
-    }
+    if (index === -1) return this.throwNotFoundException();
+
     this.messages.splice(index, 1);
     return { deleted: true };
+  }
+
+  throwNotFoundException() {
+    // ! throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
+    throw new NotFoundException('Message not found');
   }
 }
