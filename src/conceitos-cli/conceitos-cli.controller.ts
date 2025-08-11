@@ -1,21 +1,32 @@
 import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import { ConceitosCliService } from './conceitos-cli.service';
 
 @Controller('conceitos-clis')
 export class ConceitosCliController {
-  constructor() {}
+  constructor(private readonly conceitosCliService: ConceitosCliService) {}
 
   @Post()
-  create() {}
+  create() {
+    return this.conceitosCliService.create();
+  }
 
   @Get()
-  findAll() {}
+  findAll() {
+    return this.conceitosCliService.findAll();
+  }
 
   @Get(':id')
-  findOne() {}
+  findOne(id: number) {
+    return this.conceitosCliService.findOne(id);
+  }
 
   @Patch(':id')
-  update() {}
+  update(id: number) {
+    return this.conceitosCliService.update(id);
+  }
 
   @Delete(':id')
-  remove() {}
+  remove(id: number) {
+    return this.conceitosCliService.remove(id);
+  }
 }
