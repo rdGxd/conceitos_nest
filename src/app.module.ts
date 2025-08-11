@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { RecadosModule } from './recados/recados.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
-  imports: [RecadosModule],
+  imports: [MessagesModule],
   controllers: [],
   providers: [],
   exports: [],
