@@ -22,6 +22,7 @@ export class MessagesService {
       id: ++this.lastId,
       ...createMessageDto,
       date: new Date(),
+      isRead: false,
     };
     this.messages.push(newMessage);
     return newMessage;

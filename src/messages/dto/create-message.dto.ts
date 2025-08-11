@@ -1,6 +1,5 @@
 export class CreateMessageDto {
-  text: string;
-  sender: string;
-  to: string;
-  isRead: false;
+  readonly text: string;
+  readonly sender: string;
+  readonly to: string;
 }
