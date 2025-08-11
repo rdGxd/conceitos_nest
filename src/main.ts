@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // remove chaves que nao estão no DTO
-    transform: true, // faz a validação e transforma o objeto
+    transform: false, // tenta transformar os tipos de dados de PARAM e DTOs
     forbidNonWhitelisted: true, // retorna erro se a chave não estiver no DTO
   }));
 
