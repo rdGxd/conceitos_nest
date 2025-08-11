@@ -1,27 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
 
 @Injectable()
 export class MessagesService {
-  private lastId = 1;
   private messages: Message[] = [
     {
-      id: 1,
+      id: randomUUID(),
       text: 'Hello World',
       sender: 'John',
       to: 'Jane',
       isRead: false,
-      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   ];
 
   create(createMessageDto: CreateMessageDto) {
     const newMessage: Message = {
-      id: ++this.lastId,
+      id: randomUUID(),
       ...createMessageDto,
-      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       isRead: false,
     };
     this.messages.push(newMessage);
@@ -32,7 +34,7 @@ export class MessagesService {
     return this.messages;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     const message = this.messages.find((message) => message.id === id);
     if (!message) return this.throwNotFoundException();
 
@@ -43,7 +45,7 @@ export class MessagesService {
     return this.messages.slice(offset, offset + limite);
   }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
+  update(id: string, updateMessageDto: UpdateMessageDto) {
     const message = this.messages.find((message) => message.id === id);
     if (!message) return this.throwNotFoundException();
 
@@ -51,7 +53,7 @@ export class MessagesService {
     return message;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     const index = this.messages.findIndex((message) => message.id === id);
     if (index === -1) return this.throwNotFoundException();
 
