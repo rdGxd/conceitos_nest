@@ -12,18 +12,6 @@ export class MessagesService {
     private readonly messagesRepository: Repository<Message>,
   ) {}
 
-  // private messages: Message[] = [
-  //   {
-  //     id: randomUUID(),
-  //     text: 'Hello World',
-  //     sender: 'John',
-  //     to: 'Jane',
-  //     isRead: false,
-  //     createdAt: new Date(),
-  //     updatedAt: new Date(),
-  //   },
-  // ];
-
   async create(createMessageDto: CreateMessageDto) {
     const newMessage = this.messagesRepository.create(createMessageDto);
     return await this.messagesRepository.save(newMessage);
@@ -40,13 +28,6 @@ export class MessagesService {
     return message;
   }
 
-  async searchQuery(limite: number, offset: number) {
-    return await this.messagesRepository.find({
-      skip: offset,
-      take: limite,
-    });
-  }
-
   async update(id: string, updateMessageDto: UpdateMessageDto) {
     const message = await this.messagesRepository.findOne({ where: { id } });
     if (!message) return this.throwNotFoundException();
@@ -56,11 +37,18 @@ export class MessagesService {
   }
 
   async remove(id: string) {
-    const message = await this.messagesRepository.findOne({ where: { id } });
+    const message = await this.messagesRepository.findOneBy({ id });
     if (!message) return this.throwNotFoundException();
 
     await this.messagesRepository.remove(message);
-    return { deleted: true };
+    return message;
+  }
+
+  async searchQuery(limite: number, offset: number) {
+    return await this.messagesRepository.find({
+      skip: offset,
+      take: limite,
+    });
   }
 
   throwNotFoundException() {
