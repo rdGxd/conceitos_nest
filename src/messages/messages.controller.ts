@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -27,6 +28,12 @@ export class MessagesController {
   @Get()
   findAll() {
     return this.messagesService.findAll();
+  }
+
+  @Get()
+  findAllQuery(@Query() pagination: any) {
+    const { limite = 10, offset = 0 } = pagination;
+    return `Retorna todos os recados limite igual a ${limite} e offset igual a ${offset}`;
   }
 
   @Get(':id')
