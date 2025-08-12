@@ -34,7 +34,7 @@ export class MessagesService {
     return MessageMapper.toResponseDto(savedMessage);
   }
 
-  async findAll(paginationDto: PaginationDto = { limit: 10, offset: 0 }) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit, offset } = paginationDto;
     const messages = await this.messagesRepository.find({
       relations: ['sender', 'to'],

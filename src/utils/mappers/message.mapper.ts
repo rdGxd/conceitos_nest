@@ -4,7 +4,6 @@ import { Message } from 'src/messages/entities/message.entity';
 import { User } from 'src/users/entities/user.entity';
 
 export class MessageMapper {
-  // Este método não deve usar DTO diretamente, pois precisa das entidades User
   static toEntity(text: string, sender: User, to: User): Message {
     const message = new Message();
     message.text = text;

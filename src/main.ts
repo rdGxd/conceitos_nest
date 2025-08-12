@@ -8,11 +8,10 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, //* remove chaves que nao estão no DTO
+      forbidNonWhitelisted: true, //* retorna erro se a chave não estiver no DTO
 
       //* TENTE USAR O ParseIntPipe ou algo do tipo direto no controller
       transform: false, //* tenta transformar os tipos de dados de PARAM e DTOs
-
-      forbidNonWhitelisted: true, //* retorna erro se a chave não estiver no DTO
     }),
   );
 

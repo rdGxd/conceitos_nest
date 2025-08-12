@@ -35,7 +35,7 @@ export class UsersService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
+    const { limit, offset } = paginationDto;
     const users = await this.usersRepository.find({
       order: {
         createdAt: 'desc',
