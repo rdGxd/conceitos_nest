@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UsersService } from 'src/users/users.service';
 import { MessageMapper } from 'src/utils/mappers/message.mapper';
 import { Repository } from 'typeorm';
@@ -33,12 +34,15 @@ export class MessagesService {
     return MessageMapper.toResponseDto(savedMessage);
   }
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto = { limit: 10, offset: 0 }) {
+    const { limit, offset } = paginationDto;
     const messages = await this.messagesRepository.find({
       relations: ['sender', 'to'],
       order: {
         createdAt: 'desc',
       },
+      take: limit,
+      skip: offset,
     });
     return messages.map((message) => MessageMapper.toResponseDto(message));
   }

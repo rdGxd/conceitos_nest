@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UserMapper } from 'src/utils/mappers/user.mapper';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -33,11 +34,14 @@ export class UsersService {
     }
   }
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
     const users = await this.usersRepository.find({
       order: {
         createdAt: 'desc',
       },
+      take: limit,
+      skip: offset,
     });
     return users.map((user) => UserMapper.toResponseDto(user));
   }
