@@ -1,13 +1,18 @@
 import { plainToInstance } from 'class-transformer';
-import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { ResponseMessageDto } from 'src/messages/dto/response-message.dto';
 import { Message } from 'src/messages/entities/message.entity';
+import { User } from 'src/users/entities/user.entity';
 
 export class MessageMapper {
-  static async toEntity(dto: CreateMessageDto): Promise<Message> {
-    return plainToInstance(Message, dto, {
-      excludeExtraneousValues: true,
-    });
+  // Este método não deve usar DTO diretamente, pois precisa das entidades User
+  static toEntity(text: string, sender: User, to: User): Message {
+    const message = new Message();
+    message.text = text;
+    message.sender = sender;
+    message.to = to;
+    message.isRead = false;
+
+    return message;
   }
 
   static toResponseDto(message: Message): ResponseMessageDto {

@@ -26,15 +26,10 @@ export class MessagesService {
       throw new NotFoundException('User not found');
     }
 
-    // Cria a mensagem com as entidades User
-    const newMessage = this.messagesRepository.create({
-      text,
-      sender,
-      to,
-      isRead: false,
-    });
-
+    // Usa o mapper para criar a entidade
+    const newMessage = MessageMapper.toEntity(text, sender, to);
     const savedMessage = await this.messagesRepository.save(newMessage);
+
     return MessageMapper.toResponseDto(savedMessage);
   }
 
@@ -65,7 +60,13 @@ export class MessagesService {
     });
     if (!message) return this.throwNotFoundException();
 
-    Object.assign(message, updateMessageDto);
+    if (updateMessageDto?.text !== undefined) {
+      message.text = updateMessageDto.text;
+    }
+    if (updateMessageDto?.isRead !== undefined) {
+      message.isRead = updateMessageDto.isRead;
+    }
+
     const updatedMessage = await this.messagesRepository.save(message);
     return MessageMapper.toResponseDto(updatedMessage);
   }
