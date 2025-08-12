@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,12 +16,29 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.usersRepository.create(createUserDto);
-    return await this.usersRepository.save(user);
+    try {
+      const userData = {
+        name: createUserDto.name,
+        email: createUserDto.email,
+        passwordHash: createUserDto.password,
+      };
+
+      const newUser = this.usersRepository.create(userData);
+      return await this.usersRepository.save(newUser);
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException('Email já está cadastrado');
+      }
+      throw error;
+    }
   }
 
   async findAll() {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      order: {
+        id: 'desc',
+      },
+    });
   }
 
   async findOne(id: string) {
@@ -30,7 +51,11 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    await this.usersRepository.delete(id);
-    return `This action removes a #${id} user`;
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return await this.usersRepository.remove(user);
   }
 }

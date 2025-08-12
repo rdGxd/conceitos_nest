@@ -17,7 +17,7 @@ export class User {
   @MaxLength(100)
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   @IsEmail()
   email: string;
 
