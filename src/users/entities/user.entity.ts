@@ -14,18 +14,15 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  @Expose()
   id: string;
 
   @Column({ nullable: true })
   @MinLength(3)
   @MaxLength(100)
-  @Expose()
   name: string;
 
   @Column({ nullable: true, unique: true })
   @IsEmail()
-  @Expose()
   email: string;
 
   @Column({ nullable: true })

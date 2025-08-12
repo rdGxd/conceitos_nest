@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ResponseUserDto } from 'src/users/dto/response-user.dto';
@@ -6,15 +5,7 @@ import { User } from 'src/users/entities/user.entity';
 
 export class UserMapper {
   static async toEntity(dto: CreateUserDto): Promise<User> {
-    const entity = new User();
-    entity.name = dto.name;
-    entity.email = dto.email;
-
-    if (dto.password) {
-      entity.passwordHash = await bcrypt.hash(dto.password, 10);
-    }
-
-    return entity;
+    return plainToInstance(User, dto);
   }
 
   static toResponseDto(entity: User): ResponseUserDto {

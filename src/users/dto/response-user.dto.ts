@@ -1,16 +1,24 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { CreateUserDto } from './create-user.dto';
 
-export class ResponseUserDto extends OmitType(CreateUserDto, [
-  'password',
-] as const) {
+export class ResponseUserDto {
   @Expose()
+  @ApiProperty({ example: '12345' })
   id: string;
 
   @Expose()
-  createdAt?: Date;
+  @ApiProperty({ example: 'John Doe' })
+  name: string;
 
   @Expose()
-  updatedAt?: Date;
+  @ApiProperty({ example: 'john.doe@example.com' })
+  email: string;
+
+  @Expose()
+  @ApiProperty({ example: '2022-01-01T00:00:00Z' })
+  createdAt: Date;
+
+  @Expose()
+  @ApiProperty({ example: '2022-01-01T00:00:00Z' })
+  updatedAt: Date;
 }

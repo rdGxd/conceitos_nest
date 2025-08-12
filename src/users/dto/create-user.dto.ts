@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import {
   IsEmail,
@@ -12,18 +13,19 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  @Expose()
+  @ApiProperty({ description: 'The name of the user', maxLength: 100 })
   name: string;
 
   @IsEmail()
   @IsString()
   @IsNotEmpty()
-  @Expose()
+  @ApiProperty({ description: 'The email of the user' })
   email: string;
 
+  // @IsStrongPassword({ minLength: 5, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
   @MinLength(5)
   @IsString()
   @IsNotEmpty()
-  // @IsStrongPassword({ minLength: 5, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
+  @ApiProperty({ description: 'The password of the user', minLength: 5 })
   password: string;
 }

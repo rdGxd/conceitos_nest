@@ -18,18 +18,14 @@ export class MessagesService {
   ) {}
 
   async create(createMessageDto: CreateMessageDto) {
-    const { text, senderId, toId } = createMessageDto;
-    // Busca os usuários pelo ID
-    const sender = await this.usersService.findEntityById(senderId);
-    const to = await this.usersService.findEntityById(toId);
-
-    if (!sender || !to) {
+    if (!createMessageDto.senderId || !createMessageDto.toId) {
       throw new NotFoundException('User not found');
     }
 
     // Usa o mapper para criar a entidade
-    const newMessage = MessageMapper.toEntity(text, sender, to);
-    const savedMessage = await this.messagesRepository.save(newMessage);
+    const newMessage = MessageMapper.toEntity(createMessageDto);
+    const createdMessage = this.messagesRepository.create(newMessage);
+    const savedMessage = await this.messagesRepository.save(createdMessage);
 
     return MessageMapper.toResponseDto(savedMessage);
   }
