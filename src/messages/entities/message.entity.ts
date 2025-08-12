@@ -21,13 +21,19 @@ export class Message {
   text: string;
 
   // Muitos recados podem ser enviados por um usuário (emissor)
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, {
+    nullable: false,
+    onDelete: 'CASCADE', // Se User for deletado, suas mensagens também são
+  })
   // Especifica a coluna que será usada como chave estrangeira
   @JoinColumn({ name: 'senderId' })
   sender: User;
 
   // Muitos recados podem ser enviados para um usuário (destinatário)
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, {
+    nullable: false,
+    onDelete: 'CASCADE', // Se User for deletado, mensagens para ele também são
+  })
   // Especifica a coluna que será usada como chave estrangeira
   @JoinColumn({ name: 'toId' })
   to: User;

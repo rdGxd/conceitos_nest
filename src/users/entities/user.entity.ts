@@ -42,14 +42,14 @@ export class User {
 
   //  Uma Pessoa pode ter enviado muitos recados (como "sender")
   // Esses recados são relacionados ao campo "sender" na entidade Message
-  @OneToMany(() => Message, (message) => message.sender)
+  @OneToMany(() => Message, (message) => message.sender, { cascade: true })
   // Especifica a coluna que será usada como chave estrangeira
   @JoinColumn({ name: 'sender' })
   sentMessages: Message[];
 
   //  Uma Pessoa pode ter recebido muitos recados (como "to")
   // Esses recados são relacionados ao campo "to" na entidade Message
-  @OneToMany(() => Message, (message) => message.to)
+  @OneToMany(() => Message, (message) => message.to, { cascade: true })
   // Especifica a coluna que será usada como chave estrangeira
   @JoinColumn({ name: 'to' })
   receivedMessages: Message[];
