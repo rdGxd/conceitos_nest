@@ -18,7 +18,10 @@ export class MessagesService {
   ) {}
 
   async create(createMessageDto: CreateMessageDto) {
-    if (!createMessageDto.senderId || !createMessageDto.toId) {
+    const sender = await this.usersService.findEntityById(createMessageDto.senderId);
+    const recipient = await this.usersService.findEntityById(createMessageDto.toId);
+
+    if (!sender || !recipient) {
       throw new NotFoundException('User not found');
     }
 
