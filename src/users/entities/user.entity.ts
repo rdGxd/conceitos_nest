@@ -1,9 +1,12 @@
 import { Exclude } from 'class-transformer';
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
+import { Message } from 'src/messages/entities/message.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -33,4 +36,18 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt?: Date;
+
+  //  Uma Pessoa pode ter enviado muitos recados (como "sender")
+  // Esses recados são relacionados ao campo "sender" na entidade Message
+  @OneToMany(() => Message, (message) => message.sender)
+  // Especifica a coluna que será usada como chave estrangeira
+  @JoinColumn({ name: 'sender' })
+  sentMessages: Message[];
+
+  //  Uma Pessoa pode ter recebido muitos recados (como "to")
+  // Esses recados são relacionados ao campo "to" na entidade Message
+  @OneToMany(() => Message, (message) => message.to)
+  // Especifica a coluna que será usada como chave estrangeira
+  @JoinColumn({ name: 'to' })
+  receivedMessages: Message[];
 }
