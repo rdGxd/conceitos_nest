@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MessagesService {
   constructor(
     @InjectRepository(Message)
     private readonly messagesRepository: Repository<Message>,
+    // Injeta o UsersService para poder acessar os usuários
+    private readonly usersService: UsersService,
   ) {}
 
   async create(createMessageDto: CreateMessageDto) {
