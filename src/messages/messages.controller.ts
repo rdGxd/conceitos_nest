@@ -9,15 +9,20 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { ParseStringUUIDPipe } from 'src/common/pipes/parse-string-uuid.pipe';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
 
 @Controller('messages')
+// Para toda a classe
+// @UseInterceptors(AddHeaderInterceptor)
+// @UsePipes(ParseStringUUIDPipe)
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
@@ -34,8 +39,10 @@ export class MessagesController {
   }
 
   @Get(':id')
+  // Para o método
   @UsePipes(ParseStringUUIDPipe)
-  findOne(@Param('id') id: string) {
+  @UseInterceptors(AddHeaderInterceptor)
+  findOne(@Param('id' /*ParseIntPipe*/) id: string) {
     return this.messagesService.findOne(id);
   }
 
@@ -45,8 +52,6 @@ export class MessagesController {
   }
 
   @Delete(':id')
-  // @UsePipes(ParseIntPipe)
-  // remove(@Param('id', ParseIntPipe) id: string) {}
   remove(@Param('id') id: string) {
     return this.messagesService.remove(id);
   }
