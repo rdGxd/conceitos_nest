@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import {
   Column,
@@ -24,6 +25,7 @@ export class User {
   @Column({ nullable: true })
   @MinLength(5)
   @MaxLength(255)
+  @Exclude()
   passwordHash: string;
 
   @CreateDateColumn()
