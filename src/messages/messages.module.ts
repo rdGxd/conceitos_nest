@@ -10,7 +10,7 @@ import { MessagesService } from './messages.service';
   providers: [MessagesService],
   // Exporta o MessagesService para que possa ser usado em outros módulos
   exports: [MessagesService],
-  // Importa o módulo TypeOrmModule com a entidade Message para criar no banco de dados e o UsersModule para acessar os usuários
+  // Importa o módulo TypeOrmModule com a entidade Message para criar no banco de dados e o UsersModule para acessar os usuáriosaa
   imports: [TypeOrmModule.forFeature([Message]), UsersModule],
 })
 export class MessagesModule {}
