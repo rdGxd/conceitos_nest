@@ -34,11 +34,12 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.usersRepository.find({
+    const users = await this.usersRepository.find({
       order: {
         createdAt: 'desc',
       },
     });
+    return users.map((user) => UserMapper.toResponseDto(user));
   }
 
   async findOne(id: string) {
@@ -50,11 +51,21 @@ export class UsersService {
     return UserMapper.toResponseDto(user);
   }
 
+  // Método auxiliar para retornar a entidade User (para uso interno)
+  async findEntityById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+    return user;
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto) {
     const userData = {
       name: updateUserDto?.name,
       email: updateUserDto?.email,
-      password: updateUserDto?.password && bcrypt.hashSync(updateUserDto.password, 10),
+      password:
+        updateUserDto?.password && bcrypt.hashSync(updateUserDto.password, 10),
     };
 
     const user = await this.usersRepository.preload({ id, ...userData });

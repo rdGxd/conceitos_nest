@@ -9,7 +9,11 @@ export class UserMapper {
     const entity = new User();
     entity.name = dto.name;
     entity.email = dto.email;
-    entity.passwordHash = await bcrypt.hash(dto.password, 10);
+
+    if (dto.password) {
+      entity.passwordHash = await bcrypt.hash(dto.password, 10);
+    }
+
     return entity;
   }
 

@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import { Message } from 'src/messages/entities/message.entity';
 import {
@@ -14,15 +14,18 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
+  @Expose()
   id: string;
 
   @Column({ nullable: true })
   @MinLength(3)
   @MaxLength(100)
+  @Expose()
   name: string;
 
   @Column({ nullable: true, unique: true })
   @IsEmail()
+  @Expose()
   email: string;
 
   @Column({ nullable: true })

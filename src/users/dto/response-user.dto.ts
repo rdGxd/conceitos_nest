@@ -1,17 +1,12 @@
+import { OmitType } from '@nestjs/mapped-types';
 import { Expose } from 'class-transformer';
+import { CreateUserDto } from './create-user.dto';
 
-export class ResponseUserDto {
+export class ResponseUserDto extends OmitType(CreateUserDto, [
+  'password',
+] as const) {
   @Expose()
   id: string;
-
-  @Expose()
-  name: string;
-
-  @Expose()
-  email: string;
-
-  @Expose()
-  isActive: boolean;
 
   @Expose()
   createdAt?: Date;

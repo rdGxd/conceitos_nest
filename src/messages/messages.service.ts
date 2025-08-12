@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UsersService } from 'src/users/users.service';
+import { MessageMapper } from 'src/utils/mappers/message.mapper';
 import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { Message } from './entities/message.entity';
-import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MessagesService {
@@ -16,42 +17,78 @@ export class MessagesService {
   ) {}
 
   async create(createMessageDto: CreateMessageDto) {
-    const newMessage = this.messagesRepository.create(createMessageDto);
-    return await this.messagesRepository.save(newMessage);
+    const { text, senderId, toId } = createMessageDto;
+    // Busca os usuários pelo ID
+    const sender = await this.usersService.findEntityById(senderId);
+    const to = await this.usersService.findEntityById(toId);
+
+    if (!sender || !to) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Cria a mensagem com as entidades User
+    const newMessage = this.messagesRepository.create({
+      text,
+      sender,
+      to,
+      isRead: false,
+    });
+
+    const savedMessage = await this.messagesRepository.save(newMessage);
+    return MessageMapper.toResponseDto(savedMessage);
   }
 
   async findAll() {
-    return await this.messagesRepository.find();
+    const messages = await this.messagesRepository.find({
+      relations: ['sender', 'to'],
+      order: {
+        createdAt: 'desc',
+      },
+    });
+    return messages.map((message) => MessageMapper.toResponseDto(message));
   }
 
   async findOne(id: string) {
-    const message = await this.messagesRepository.findOne({ where: { id } });
+    const message = await this.messagesRepository.findOne({
+      where: { id },
+      relations: ['sender', 'to'],
+    });
     if (!message) return this.throwNotFoundException();
 
-    return message;
+    return MessageMapper.toResponseDto(message);
   }
 
   async update(id: string, updateMessageDto: UpdateMessageDto) {
-    const message = await this.messagesRepository.findOne({ where: { id } });
+    const message = await this.messagesRepository.findOne({
+      where: { id },
+      relations: ['sender', 'to'],
+    });
     if (!message) return this.throwNotFoundException();
 
     Object.assign(message, updateMessageDto);
-    return await this.messagesRepository.save(message);
+    const updatedMessage = await this.messagesRepository.save(message);
+    return MessageMapper.toResponseDto(updatedMessage);
   }
 
   async remove(id: string) {
-    const message = await this.messagesRepository.findOneBy({ id });
+    const message = await this.messagesRepository.findOne({
+      where: { id },
+      relations: ['sender', 'to'],
+    });
     if (!message) return this.throwNotFoundException();
 
+    const messageDto = MessageMapper.toResponseDto(message);
     await this.messagesRepository.remove(message);
-    return message;
+    return messageDto;
   }
 
   async searchQuery(limite: number, offset: number) {
-    return await this.messagesRepository.find({
+    const messages = await this.messagesRepository.find({
       skip: offset,
       take: limite,
+      relations: ['sender', 'to'],
     });
+    return messages.map((message) => MessageMapper.toResponseDto(message));
   }
 
   throwNotFoundException() {
