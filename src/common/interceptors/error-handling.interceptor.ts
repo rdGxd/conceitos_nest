@@ -12,7 +12,6 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
     return next.handle().pipe(
       catchError((error) => {
-        console.error('Error occurred:', error);
         return throwError(() => {
           if (error.name == 'NotFoundException') {
             return new BadRequestException('Mensagem não encontrada');

@@ -4,7 +4,6 @@ import { NextFunction, Request, Response } from 'express';
 @Injectable()
 export class SimpleMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('SimpleMiddleware: Acessou o recurso ' + req.originalUrl);
     const authorization = req.headers['authorization'];
 
     if (authorization) {
@@ -23,8 +22,6 @@ export class SimpleMiddleware implements NestMiddleware {
 
     next(); // Chama o próximo middleware ou rota
 
-    res.on('finish', () => {
-      console.log('SimpleMiddleware: Resposta enviada');
-    });
+    res.on('finish', () => {});
   }
 }

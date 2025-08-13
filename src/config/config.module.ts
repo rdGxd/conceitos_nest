@@ -5,6 +5,6 @@ import { DatabaseConfig } from './database.config';
 @Module({
   imports: [ConfigModule],
   providers: [DatabaseConfig],
-  exports: [DatabaseConfig], // exporta para outros módulos
+  exports: [DatabaseConfig],
 })
 export class AppConfigModule {}

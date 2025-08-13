@@ -1,12 +1,6 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { SimpleMiddleware } from './common/middlewares/simple.middleware';
 import { AppConfigModule } from './config/config.module';
 import { DatabaseConfig } from './config/database.config';
 import { GlobalProvidersConfig } from './config/global-providers.config';
@@ -32,14 +26,4 @@ import { UsersModule } from './users/users.module';
   providers: [...GlobalProvidersConfig.get()],
   exports: [],
 })
-
-// USANDO MIDDLEWARE
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    // Aplicando o middleware a todas as rotas
-    consumer.apply(SimpleMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    });
-  }
-}
+export class AppModule {}

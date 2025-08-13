@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -20,7 +18,6 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
 
 @Controller('messages')
-// @UseInterceptors(AuthTokenInterceptor)
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
@@ -31,15 +28,13 @@ export class MessagesController {
 
   @Get()
   @UseGuards(IsAdminGuard)
-  // findAll(@Query() paginationDto: PaginationDto, @Req() req: Request) {
   findAll(@Query() paginationDto: PaginationDto) {
     return this.messagesService.findAll(paginationDto);
   }
 
   @Get(':id')
-  // Para o método
   @UsePipes(ParseStringUUIDPipe)
-  findOne(@Param('id' /*ParseIntPipe*/) id: string) {
+  findOne(@Param('id') id: string) {
     return this.messagesService.findOne(id);
   }
 

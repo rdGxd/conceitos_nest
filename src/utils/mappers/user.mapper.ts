@@ -9,6 +9,7 @@ export class UserMapper {
     const entity = plainToInstance(User, {
       name: dto.name,
       email: dto.email,
+      role: dto.role,
       passwordHash: await bcrypt.hash(dto.password, 10),
     });
 

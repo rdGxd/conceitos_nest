@@ -10,7 +10,6 @@ import { tap } from 'rxjs';
 export class TimingConnectionInterceptor implements NestInterceptor {
   async intercept(context: ExecutionContext, next: CallHandler): Promise<any> {
     const startTime = Date.now();
-    console.log('Timing connection... ANTES');
 
     // await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -18,10 +17,6 @@ export class TimingConnectionInterceptor implements NestInterceptor {
       tap((data) => {
         const finalTime = Date.now();
         const elapsedTime = finalTime - startTime;
-        console.log(
-          `${context.getClass().name} - ${context.getHandler().name} executed DEPOIS em ${elapsedTime}ms`,
-        );
-        console.log(`Resposta: ${JSON.stringify(data)}`);
       }),
     );
   }
