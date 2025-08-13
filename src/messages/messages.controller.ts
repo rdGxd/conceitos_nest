@@ -9,9 +9,11 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { AuthTokenInterceptor } from 'src/common/interceptors/auth-token.interceptor';
 import { ParseStringUUIDPipe } from 'src/common/pipes/parse-string-uuid.pipe';
@@ -29,10 +31,10 @@ export class MessagesController {
     return this.messagesService.create(createMessageDto);
   }
 
-  // @HttpCode(200)
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto, @Req() req: Request) {
+    console.log('CONTROLLER', req['user']);
     return this.messagesService.findAll(paginationDto);
   }
 
