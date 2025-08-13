@@ -18,6 +18,7 @@ import { ParseStringUUIDPipe } from 'src/common/pipes/parse-string-uuid.pipe';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
+import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 
 @Controller('messages')
 // Para toda a classe
@@ -34,6 +35,7 @@ export class MessagesController {
   // @HttpCode(200)
   @HttpCode(HttpStatus.OK)
   @Get()
+  @UseInterceptors(TimingConnectionInterceptor)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.messagesService.findAll(paginationDto);
   }
