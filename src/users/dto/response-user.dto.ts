@@ -15,10 +15,10 @@ export class ResponseUserDto {
   email: string;
 
   @Expose()
-  @ApiProperty({ example: '2022-01-01T00:00:00Z' })
-  createdAt: Date;
+  @ApiProperty({ example: '2022-01-01T00:00:00Z', required: false })
+  createdAt?: Date;
 
   @Expose()
-  @ApiProperty({ example: '2022-01-01T00:00:00Z' })
-  updatedAt: Date;
+  @ApiProperty({ example: '2022-01-01T00:00:00Z', required: false })
+  updatedAt?: Date;
 }

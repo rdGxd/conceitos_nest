@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from 'src/users';
 import { MessageMapper } from 'src/utils/mappers/message.mapper';
 import { Repository } from 'typeorm';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -18,18 +18,19 @@ export class MessagesService {
   ) {}
 
   async create(createMessageDto: CreateMessageDto) {
-    const sender = await this.usersService.findEntityById(createMessageDto.senderId);
-    const recipient = await this.usersService.findEntityById(createMessageDto.toId);
-
-    if (!sender || !recipient) {
-      throw new NotFoundException('User not found');
-    }
+    const { text, senderId, toId } = createMessageDto;
+    // Verifica se o remetente e o destinatário existem
+    const sender = await this.usersService.findEntityById(senderId);
+    const to = await this.usersService.findEntityById(toId);
 
     // Usa o mapper para criar a entidade
-    const newMessage = MessageMapper.toEntity(createMessageDto);
+    const newMessage = MessageMapper.toEntity(text, sender, to);
+
+    // Cria a mensagem e logo apos isso salva no banco de dados
     const createdMessage = this.messagesRepository.create(newMessage);
     const savedMessage = await this.messagesRepository.save(createdMessage);
 
+    // retorna um DTO da mensagem criada
     return MessageMapper.toResponseDto(savedMessage);
   }
 

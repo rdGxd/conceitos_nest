@@ -1,4 +1,3 @@
-import { Exclude, Expose } from 'class-transformer';
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
 import { Message } from 'src/messages/entities/message.entity';
 import {
@@ -28,7 +27,6 @@ export class User {
   @Column({ nullable: true })
   @MinLength(5)
   @MaxLength(255)
-  @Exclude()
   passwordHash: string;
 
   @CreateDateColumn()

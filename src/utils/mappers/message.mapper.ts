@@ -1,22 +1,22 @@
-import { plainToInstance } from 'class-transformer';
-import { CreateMessageDto } from 'src/messages/dto/create-message.dto';
 import { ResponseMessageDto } from 'src/messages/dto/response-message.dto';
 import { Message } from 'src/messages/entities/message.entity';
+import { User } from 'src/users';
 
 export class MessageMapper {
-  static toEntity(message: CreateMessageDto): Message {
-    return plainToInstance(Message, {
-      ...message,
-      sender: message.senderId,
-      to: message.toId,
-    });
+  static toEntity(text: string, sender: User, to: User): Message {
+    const messageEntity = new Message();
+    messageEntity.text = text;
+    messageEntity.sender = sender;
+    messageEntity.to = to;
+    return messageEntity;
   }
 
   static toResponseDto(message: Message): ResponseMessageDto {
-    return plainToInstance(ResponseMessageDto, {
-      ...message,
-      senderId: message.sender.id,
-      toId: message.to.id,
-    });
+    const { sender, to, ...rest } = message;
+    const responseDto = new ResponseMessageDto();
+    Object.assign(responseDto, rest);
+    responseDto.senderId = sender.id;
+    responseDto.toId = to.id;
+    return responseDto;
   }
 }
