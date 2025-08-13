@@ -9,9 +9,11 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.interceptor';
 import { ParseStringUUIDPipe } from 'src/common/pipes/parse-string-uuid.pipe';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
