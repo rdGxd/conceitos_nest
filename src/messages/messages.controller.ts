@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -22,7 +23,7 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
 
 @Controller('messages')
-@UseInterceptors(AuthTokenInterceptor)
+// @UseInterceptors(AuthTokenInterceptor)
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
@@ -33,9 +34,10 @@ export class MessagesController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll(@Query() paginationDto: PaginationDto, @Req() req: Request) {
-    console.log('CONTROLLER', req['user']);
-    return this.messagesService.findAll(paginationDto);
+  // findAll(@Query() paginationDto: PaginationDto, @Req() req: Request) {
+  findAll(@Query() paginationDto: PaginationDto) {
+    throw new BadRequestException('Erro ao buscar mensagens');
+    // return this.messagesService.findAll(paginationDto);
   }
 
   @Get(':id')
