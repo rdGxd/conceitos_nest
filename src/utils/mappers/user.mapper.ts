@@ -1,23 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ResponseUserDto } from 'src/users/dto/response-user.dto';
 import { User } from 'src/users/entities/user.entity';
-import { HashService } from '../auth/hash-service';
 
-@Injectable()
 export class UserMapper {
-  constructor(private readonly hashService: HashService) {}
+  static async toEntity(dto: CreateUserDto): Promise<User> {
+    const entity = plainToInstance(User, {
+      name: dto.name,
+      email: dto.email,
+      passwordHash: await bcrypt.hash(dto.password, 10),
+    });
 
-  async toEntity(dto: CreateUserDto): Promise<User> {
-    const user = new User();
-    user.name = dto.name;
-    user.email = dto.email;
-    user.passwordHash = await this.hashService.hash(dto.password);
-    return user;
+    return entity;
   }
 
-  toResponseDto(entity: User): ResponseUserDto {
+  static toResponseDto(entity: User): ResponseUserDto {
     return plainToInstance(ResponseUserDto, entity, {
       excludeExtraneousValues: true,
     });

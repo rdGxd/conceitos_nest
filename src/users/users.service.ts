@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { HashService } from 'src/utils/auth/hash-service';
 import { UserMapper } from 'src/utils/mappers/user.mapper';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,18 +16,16 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-    private readonly bcryptPassword: HashService,
-    private readonly userMapper: UserMapper,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const userData = await this.userMapper.toEntity(createUserDto);
+      const userData = await UserMapper.toEntity(createUserDto);
 
       const createdUser = this.usersRepository.create(userData);
       const newUser = await this.usersRepository.save(createdUser);
 
-      return this.userMapper.toResponseDto(newUser);
+      return UserMapper.toResponseDto(newUser);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('Email já está cadastrado');
@@ -45,7 +43,7 @@ export class UsersService {
       take: limit,
       skip: offset,
     });
-    return users.map((user) => this.userMapper.toResponseDto(user));
+    return users.map((user) => UserMapper.toResponseDto(user));
   }
 
   async findOne(id: string) {
@@ -54,16 +52,16 @@ export class UsersService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    return this.userMapper.toResponseDto(user);
+    return UserMapper.toResponseDto(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const userData = {
-      name: updateUserDto?.name,
-      email: updateUserDto?.email,
+      name: updateUserDto.name,
+      email: updateUserDto.email,
       password:
-        updateUserDto?.password &&
-        this.bcryptPassword.hash(updateUserDto.password),
+        updateUserDto.password &&
+        (await bcrypt.hash(updateUserDto.password, 10)),
     };
 
     const user = await this.usersRepository.preload({ id, ...userData });
@@ -72,7 +70,7 @@ export class UsersService {
       throw new NotFoundException('Usuário não encontrado');
     }
     await this.usersRepository.save(user);
-    return this.userMapper.toResponseDto(user);
+    return UserMapper.toResponseDto(user);
   }
 
   async remove(id: string) {
@@ -80,7 +78,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
-    const userDto = this.userMapper.toResponseDto(user);
+    const userDto = UserMapper.toResponseDto(user);
     await this.usersRepository.remove(user);
     return userDto;
   }
