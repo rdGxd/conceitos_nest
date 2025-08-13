@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,13 +9,11 @@ import {
   Patch,
   Post,
   Query,
-  Req,
-  UseInterceptors,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import type { Request } from 'express';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { AuthTokenInterceptor } from 'src/common/interceptors/auth-token.interceptor';
+import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { ParseStringUUIDPipe } from 'src/common/pipes/parse-string-uuid.pipe';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
@@ -32,12 +29,11 @@ export class MessagesController {
     return this.messagesService.create(createMessageDto);
   }
 
-  @HttpCode(HttpStatus.OK)
   @Get()
+  @UseGuards(IsAdminGuard)
   // findAll(@Query() paginationDto: PaginationDto, @Req() req: Request) {
   findAll(@Query() paginationDto: PaginationDto) {
-    throw new BadRequestException('Erro ao buscar mensagens');
-    // return this.messagesService.findAll(paginationDto);
+    return this.messagesService.findAll(paginationDto);
   }
 
   @Get(':id')

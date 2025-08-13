@@ -4,9 +4,10 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SimpleMiddleware } from './common/middlewares/simple.middleware';
+import { AppConfigModule } from './config/config.module';
 import { DatabaseConfig } from './config/database.config';
 import { GlobalProvidersConfig } from './config/global-providers.config';
 import { MessagesModule } from './messages/messages.module';
@@ -18,10 +19,10 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        return new DatabaseConfig(configService).getOptions();
+      imports: [AppConfigModule],
+      inject: [DatabaseConfig],
+      useFactory: (dbConfig: DatabaseConfig) => {
+        return dbConfig.getOptions();
       },
     }),
     UsersModule,
