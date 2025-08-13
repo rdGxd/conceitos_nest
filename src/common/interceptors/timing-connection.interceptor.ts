@@ -12,7 +12,8 @@ export class TimingConnectionInterceptor implements NestInterceptor {
     const startTime = Date.now();
     console.log('Timing connection... ANTES');
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+
     return next.handle().pipe(
       tap((data) => {
         const finalTime = Date.now();
