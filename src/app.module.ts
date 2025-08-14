@@ -1,24 +1,22 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppConfigModule } from './config/config.module';
-import { DatabaseConfigInterface } from './config/database/database-config.interface';
-import { DatabaseConfig } from './config/database/database.config';
 import { GlobalProvidersConfig } from './config/global-providers.config';
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [AppConfigModule],
-      inject: [DatabaseConfig],
-      useFactory: (dbConfig: DatabaseConfigInterface) => {
-        return dbConfig.getOptions();
-      },
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: process.env.DATABASE_TYPE as any,
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT as any),
+      username: process.env.DATABASE_USER,
+      database: process.env.DATABASE_NAME,
+      password: process.env.DATABASE_PASS,
+      synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
+      autoLoadEntities: Boolean(process.env.DATABASE_AUTOLOADENTITIES),
     }),
     UsersModule,
     MessagesModule,
