@@ -26,12 +26,12 @@ export class RemoveSpaceProcessor implements IRegexProcessor {
 export class OnlyLettersProcessor extends RegexProcessorBase {
   // ✅ Só precisa implementar o método abstrato
   execute(str: string): string {
-    return str.replace(/[^a-zA-Z]/g, '');
+    return str.replace(/[^a-z]/g, '');
   }
 
   // ✅ Pode sobrescrever validação se necessário
   protected validate(str: string): boolean {
-    return super.validate(str) && /[a-zA-Z]/.test(str);
+    return super.validate(str) && /[a-z]/.test(str);
   }
 }
 

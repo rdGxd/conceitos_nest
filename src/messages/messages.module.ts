@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OnlyLowercaseLettersRegex } from 'src/common/regex/only-lowercase-letters.regex';
+import { RegexFactory } from 'src/common/regex/regex.factory';
 import { RemoveSpaceRegex } from 'src/common/regex/remove-space.regex';
 import { UsersModule } from 'src/users';
 import { Message } from './entities/message.entity';
@@ -22,6 +23,23 @@ import { MessagesService } from './messages.service';
     {
       provide: REMOVE_SPACE_REGEX,
       useClass: RemoveSpaceRegex,
+    },
+    RegexFactory,
+    {
+      provide: REMOVE_SPACE_REGEX, // token
+      useFactory: (regexFactory: RegexFactory) => {
+        // Meu código/lógica
+        return regexFactory.create('RemoveSpaceProcessor');
+      }, // Factory
+      inject: [RegexFactory], // Injetando na factory na ordem
+    },
+    {
+      provide: ONLY_LOWERCASE_LETTERS_REGEX, // token
+      useFactory: (regexFactory: RegexFactory) => {
+        // Meu código/lógica
+        return regexFactory.create('OnlyLettersProcessor');
+      }, // Factory
+      inject: [RegexFactory], // Injetando na factory na ordem
     },
   ],
   // Exporta o MessagesService para que possa ser usado em outros módulos

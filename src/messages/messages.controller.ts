@@ -28,7 +28,7 @@ export class MessagesController {
   constructor(
     private readonly messagesService: MessagesService,
     @Inject(REMOVE_SPACE_REGEX)
-    private readonly removeSpaceRegex: RegexProtocol,
+    private readonly removeSpacesRegex: RegexProtocol,
     @Inject(ONLY_LOWERCASE_LETTERS_REGEX)
     private readonly onlyLowercaseLettersRegex: RegexProtocol,
   ) {}
@@ -41,8 +41,9 @@ export class MessagesController {
   @Get()
   @UseGuards(IsAdminGuard)
   findAll(@Query() paginationDto: PaginationDto) {
-    console.log(this.removeSpaceRegex.execute('   Hello World!   '));
-    console.log(this.onlyLowercaseLettersRegex.execute('Hello World!'));
+    console.log(this.removeSpacesRegex.execute('   Hello World!   '));
+    console.log(this.onlyLowercaseLettersRegex.execute('   Hello World!   '));
+
     return this.messagesService.findAll(paginationDto);
   }
 
