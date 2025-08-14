@@ -1,7 +1,8 @@
 import Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import appConfig from './app.config';
 import { GlobalProvidersConfig } from './config/global-providers.config';
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
@@ -9,6 +10,7 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
+      load: [appConfig],
       validationSchema: Joi.object({
         DATABASE_TYPE: Joi.string()
           .valid('postgres', 'mysql', 'sqlite')
@@ -22,15 +24,23 @@ import { UsersModule } from './users/users.module';
         DATABASE_SYNCHRONIZE: Joi.number().valid(0, 1).default(0),
       }),
     }),
-    TypeOrmModule.forRoot({
-      type: process.env.DATABASE_TYPE as any,
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT as any),
-      username: process.env.DATABASE_USER,
-      database: process.env.DATABASE_NAME,
-      password: process.env.DATABASE_PASS,
-      synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
-      autoLoadEntities: Boolean(process.env.DATABASE_AUTOLOADENTITIES),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          type: configService.get<'postgres'>('database.type'),
+          host: configService.get<string>('database.host'),
+          port: configService.get<number>('database.port'),
+          username: configService.get<string>('database.username'),
+          database: configService.get<string>('database.name'),
+          password: configService.get<string>('database.password'),
+          synchronize: configService.get<boolean>('database.synchronize'),
+          autoLoadEntities: configService.get<boolean>(
+            'database.autoLoadEntities',
+          ),
+        };
+      },
     }),
     UsersModule,
     MessagesModule,
