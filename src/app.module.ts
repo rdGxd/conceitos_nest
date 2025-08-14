@@ -1,3 +1,4 @@
+import Joi from '@hapi/joi';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,7 +8,20 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      validationSchema: Joi.object({
+        DATABASE_TYPE: Joi.string()
+          .valid('postgres', 'mysql', 'sqlite')
+          .required(),
+        DATABASE_HOST: Joi.string().required(),
+        DATABASE_PORT: Joi.number().default(5432),
+        DATABASE_USER: Joi.string().required(),
+        DATABASE_PASS: Joi.string().required(),
+        DATABASE_NAME: Joi.string().required(),
+        DATABASE_AUTOLOADENTITIES: Joi.number().valid(0, 1).default(0),
+        DATABASE_SYNCHRONIZE: Joi.number().valid(0, 1).default(0),
+      }),
+    }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as any,
       host: process.env.DATABASE_HOST,
