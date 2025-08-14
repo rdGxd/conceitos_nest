@@ -1,27 +1,31 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import appConfig from './app.config';
 import { GlobalProvidersConfig } from './config/global-providers.config';
+import globalConfig from './globa-config/globa.config';
+import { GlobalConfigModule } from './globa-config/global-config.module';
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    GlobalConfigModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(appConfig)],
-      inject: [appConfig.KEY],
-      useFactory: async (appConfiguration: ConfigType<typeof appConfig>) => {
+      imports: [ConfigModule.forFeature(globalConfig)],
+      inject: [globalConfig.KEY],
+      useFactory: async (
+        globalConfiguration: ConfigType<typeof globalConfig>,
+      ) => {
         return {
-          type: appConfiguration.database.type,
-          host: appConfiguration.database.host,
-          port: appConfiguration.database.port,
-          username: appConfiguration.database.username,
-          database: appConfiguration.database.database,
-          password: appConfiguration.database.password,
-          synchronize: appConfiguration.database.synchronize,
-          autoLoadEntities: appConfiguration.database.autoLoadEntities,
+          type: globalConfiguration.database.type,
+          host: globalConfiguration.database.host,
+          port: globalConfiguration.database.port,
+          username: globalConfiguration.database.username,
+          database: globalConfiguration.database.database,
+          password: globalConfiguration.database.password,
+          synchronize: globalConfiguration.database.synchronize,
+          autoLoadEntities: globalConfiguration.database.autoLoadEntities,
         };
       },
     }),
