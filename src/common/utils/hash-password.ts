@@ -1,17 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
-/**
- * Utilitários de hash - Approach Funcional (RECOMENDADO)
- *
- * ✅ Vantagens:
- * - Stateless e puro
- * - Mais performático
- * - Fácil de testar
- * - Código mais limpo
- * - Tree-shaking amigável
- */
-
-const DEFAULT_SALT_ROUNDS = 12; // Mais seguro que 10
+const DEFAULT_SALT_ROUNDS = 12;
 
 export const hashPassword = async (
   password: string,
