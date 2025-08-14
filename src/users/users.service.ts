@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { hashPassword } from 'src/common/utils/hash-password';
 import { UserMapper } from 'src/users/mappers/user.mapper';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -60,8 +60,7 @@ export class UsersService {
       name: updateUserDto.name,
       email: updateUserDto.email,
       password:
-        updateUserDto.password &&
-        (await bcrypt.hash(updateUserDto.password, 10)),
+        updateUserDto.password && (await hashPassword(updateUserDto.password)),
     };
 
     const user = await this.usersRepository.preload({ id, ...userData });

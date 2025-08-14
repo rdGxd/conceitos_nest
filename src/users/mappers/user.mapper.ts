@@ -1,5 +1,5 @@
-import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
+import { hashPassword } from 'src/common/utils/hash-password';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ResponseUserDto } from 'src/users/dto/response-user.dto';
 import { User } from 'src/users/entities/user.entity';
@@ -10,7 +10,7 @@ export class UserMapper {
       name: dto.name,
       email: dto.email,
       role: dto.role,
-      passwordHash: await bcrypt.hash(dto.password, 10),
+      passwordHash: await hashPassword(dto.password),
     });
 
     return entity;
