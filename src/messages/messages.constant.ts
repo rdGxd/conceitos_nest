@@ -1,0 +1,3 @@
+export const SERVER_NAME = 'Conceitos Nest';
+export const ONLY_LOWERCASE_LETTERS_REGEX = "ONLY_LOWERCASE_LETTERS_REGEX";
+export const REMOVE_SPACE_REGEX = "REMOVE_SPACE_REGEX";
