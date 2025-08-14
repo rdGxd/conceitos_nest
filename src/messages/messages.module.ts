@@ -41,6 +41,16 @@ import { MessagesService } from './messages.service';
       }, // Factory
       inject: [RegexFactory], // Injetando na factory na ordem
     },
+    {
+      provide: ONLY_LOWERCASE_LETTERS_REGEX, // token
+      useFactory: async (regexFactory: RegexFactory) => {
+        // Espera algo acontecer
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Meu código/lógica
+        return regexFactory.create('OnlyLettersProcessor');
+      }, // Factory
+      inject: [RegexFactory], // Injetando na factory na ordem
+    },
   ],
   // Exporta o MessagesService para que possa ser usado em outros módulos
   exports: [MessagesService],
