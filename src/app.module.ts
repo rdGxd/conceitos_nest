@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppConfigModule } from './config/config.module';
-import { DatabaseConfig } from './config/database.config';
+import { DatabaseConfigInterface } from './config/database/database-config.interface';
+import { DatabaseConfig } from './config/database/database.config';
 import { GlobalProvidersConfig } from './config/global-providers.config';
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
@@ -15,7 +16,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRootAsync({
       imports: [AppConfigModule],
       inject: [DatabaseConfig],
-      useFactory: (dbConfig: DatabaseConfig) => {
+      useFactory: (dbConfig: DatabaseConfigInterface) => {
         return dbConfig.getOptions();
       },
     }),

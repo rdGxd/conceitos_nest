@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { DatabaseConfigInterface } from './interface/database-config.interface';
+import { DatabaseConfigInterface } from './database-config.interface';
 
 @Injectable()
 export class DatabaseConfig implements DatabaseConfigInterface {

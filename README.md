@@ -1,98 +1,458 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🏗️ Estrutura de Projeto NestJS - Melhores Práticas
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Esta é a estrutura recomendada para projetos NestJS escaláveis e maintíveis.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📁 Estrutura Completa
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+project-name/
+├── 📄 package.json
+├── 📄 tsconfig.json
+├── 📄 nest-cli.json
+├── 📄 .env / .env.example
+├── 📄 .gitignore
+├── 📄 README.md
+├── 📄 docker-compose.yml
+├── 📄 Dockerfile
+├── 🗂️ src/
+│   ├── 📄 main.ts                    # Entry point da aplicação
+│   ├── 📄 app.module.ts              # Módulo raiz
+│   ├── 📄 app.controller.ts          # Controller raiz (health check)
+│   ├── 📄 app.service.ts             # Service raiz
+│   ├── 🗂️ config/                    # Configurações
+│   │   ├── 📄 database.config.ts     # Config do banco de dados
+│   │   ├── 📄 app.config.ts          # Config geral da app
+│   │   ├── 📄 jwt.config.ts          # Config JWT
+│   │   └── 📄 redis.config.ts        # Config Redis/Cache
+│   ├── 🗂️ common/                    # Recursos compartilhados
+│   │   ├── 🗂️ decorators/            # Decorators customizados
+│   │   │   ├── 📄 roles.decorator.ts
+│   │   │   ├── 📄 public.decorator.ts
+│   │   │   └── 📄 current-user.decorator.ts
+│   │   ├── 🗂️ dto/                   # DTOs globais
+│   │   │   ├── 📄 pagination.dto.ts
+│   │   │   ├── 📄 response.dto.ts
+│   │   │   └── 📄 query-options.dto.ts
+│   │   ├── 🗂️ entities/              # Entidades base
+│   │   │   └── 📄 base.entity.ts
+│   │   ├── 🗂️ enums/                 # Enums globais
+│   │   │   ├── 📄 user-role.enum.ts
+│   │   │   └── 📄 status.enum.ts
+│   │   ├── 🗂️ exceptions/            # Exceções customizadas
+│   │   │   ├── 📄 custom-exception.filter.ts
+│   │   │   ├── 📄 http-exception.filter.ts
+│   │   │   └── 📄 validation-exception.filter.ts
+│   │   ├── 🗂️ guards/                # Guards globais
+│   │   │   ├── 📄 jwt-auth.guard.ts
+│   │   │   ├── 📄 roles.guard.ts
+│   │   │   └── 📄 local-auth.guard.ts
+│   │   ├── 🗂️ interceptors/          # Interceptors globais
+│   │   │   ├── 📄 logging.interceptor.ts
+│   │   │   ├── 📄 transform.interceptor.ts
+│   │   │   └── 📄 timeout.interceptor.ts
+│   │   ├── 🗂️ middlewares/           # Middlewares globais
+│   │   │   ├── 📄 logger.middleware.ts
+│   │   │   ├── 📄 cors.middleware.ts
+│   │   │   └── 📄 rate-limit.middleware.ts
+│   │   ├── 🗂️ pipes/                 # Pipes customizados
+│   │   │   ├── 📄 validation.pipe.ts
+│   │   │   ├── 📄 parse-uuid.pipe.ts
+│   │   │   └── 📄 transform.pipe.ts
+│   │   ├── 🗂️ strategies/            # Strategies de autenticação
+│   │   │   ├── 📄 jwt.strategy.ts
+│   │   │   ├── 📄 local.strategy.ts
+│   │   │   └── 📄 google.strategy.ts
+│   │   └── 🗂️ utils/                 # Utilitários globais
+│   │       ├── 📄 bcrypt.util.ts
+│   │       ├── 📄 date.util.ts
+│   │       └── 📄 file.util.ts
+│   ├── 🗂️ database/                  # Configurações de banco
+│   │   ├── 🗂️ migrations/            # Migrações do banco
+│   │   ├── 🗂️ seeds/                 # Seeds de dados
+│   │   └── 🗂️ factories/             # Factories para testes
+│   ├── 🗂️ modules/                   # Módulos da aplicação
+│   │   ├── 🗂️ auth/                  # Módulo de autenticação
+│   │   │   ├── 📄 auth.module.ts
+│   │   │   ├── 📄 auth.controller.ts
+│   │   │   ├── 📄 auth.service.ts
+│   │   │   ├── 🗂️ dto/
+│   │   │   │   ├── 📄 login.dto.ts
+│   │   │   │   ├── 📄 register.dto.ts
+│   │   │   │   └── 📄 reset-password.dto.ts
+│   │   │   └── 🗂️ strategies/
+│   │   │       ├── 📄 jwt.strategy.ts
+│   │   │       └── 📄 local.strategy.ts
+│   │   ├── 🗂️ users/                 # Módulo de usuários
+│   │   │   ├── 📄 users.module.ts
+│   │   │   ├── 📄 users.controller.ts
+│   │   │   ├── 📄 users.service.ts
+│   │   │   ├── 📄 users.repository.ts
+│   │   │   ├── 🗂️ dto/
+│   │   │   │   ├── 📄 create-user.dto.ts
+│   │   │   │   ├── 📄 update-user.dto.ts
+│   │   │   │   ├── 📄 user-response.dto.ts
+│   │   │   │   └── 📄 user-query.dto.ts
+│   │   │   ├── 🗂️ entities/
+│   │   │   │   └── 📄 user.entity.ts
+│   │   │   ├── 🗂️ interfaces/
+│   │   │   │   ├── 📄 user.interface.ts
+│   │   │   │   └── 📄 users-repository.interface.ts
+│   │   │   └── 🗂️ tests/
+│   │   │       ├── 📄 users.controller.spec.ts
+│   │   │       ├── 📄 users.service.spec.ts
+│   │   │       └── 📄 users.e2e-spec.ts
+│   │   ├── 🗂️ posts/                 # Módulo de posts
+│   │   │   ├── 📄 posts.module.ts
+│   │   │   ├── 📄 posts.controller.ts
+│   │   │   ├── 📄 posts.service.ts
+│   │   │   ├── 📄 posts.repository.ts
+│   │   │   ├── 🗂️ dto/
+│   │   │   ├── 🗂️ entities/
+│   │   │   ├── 🗂️ interfaces/
+│   │   │   └── 🗂️ tests/
+│   │   ├── 🗂️ comments/              # Módulo de comentários
+│   │   ├── 🗂️ notifications/         # Módulo de notificações
+│   │   ├── 🗂️ files/                 # Módulo de arquivos
+│   │   └── 🗂️ admin/                 # Módulo administrativo
+│   ├── 🗂️ shared/                    # Módulos compartilhados
+│   │   ├── 🗂️ cache/                 # Módulo de cache
+│   │   │   ├── 📄 cache.module.ts
+│   │   │   ├── 📄 cache.service.ts
+│   │   │   └── 📄 redis.service.ts
+│   │   ├── 🗂️ email/                 # Módulo de email
+│   │   │   ├── 📄 email.module.ts
+│   │   │   ├── 📄 email.service.ts
+│   │   │   └── 🗂️ templates/
+│   │   ├── 🗂️ upload/                # Módulo de upload
+│   │   │   ├── 📄 upload.module.ts
+│   │   │   ├── 📄 upload.service.ts
+│   │   │   └── 📄 multer.config.ts
+│   │   └── 🗂️ queue/                 # Módulo de filas
+│   │       ├── 📄 queue.module.ts
+│   │       ├── 📄 queue.service.ts
+│   │       └── 🗂️ processors/
+│   └── 🗂️ utils/                     # Utilitários da aplicação
+│       ├── 🗂️ mappers/               # Mappers de dados
+│       │   ├── 📄 user.mapper.ts
+│       │   ├── 📄 post.mapper.ts
+│       │   └── 📄 base.mapper.ts
+│       ├── 🗂️ validators/            # Validadores customizados
+│       │   ├── 📄 is-unique.validator.ts
+│       │   ├── 📄 is-exists.validator.ts
+│       │   └── 📄 custom-validators.ts
+│       └── 🗂️ helpers/               # Funções auxiliares
+│           ├── 📄 string.helper.ts
+│           ├── 📄 array.helper.ts
+│           └── 📄 date.helper.ts
+├── 🗂️ test/                          # Testes
+│   ├── 📄 app.e2e-spec.ts
+│   ├── 📄 jest-e2e.json
+│   ├── 🗂️ fixtures/                  # Dados de teste
+│   ├── 🗂️ mocks/                     # Mocks para testes
+│   └── 🗂️ utils/                     # Utilitários de teste
+├── 🗂️ docs/                          # Documentação
+│   ├── 📄 api.md                     # Documentação da API
+│   ├── 📄 deployment.md              # Guia de deploy
+│   └── 📄 development.md             # Guia de desenvolvimento
+├── 🗂️ scripts/                       # Scripts de automação
+│   ├── 📄 build.sh
+│   ├── 📄 deploy.sh
+│   └── 📄 migration.sh
+└── 🗂️ public/                        # Arquivos estáticos
+    ├── 🗂️ uploads/                   # Uploads de usuários
+    └── 🗂️ assets/                    # Assets estáticos
 ```
 
-## Compile and run the project
+## 🎯 Princípios da Estrutura
 
-```bash
-# development
-$ npm run start
+### 1. **Separação por Domínio** 📦
 
-# watch mode
-$ npm run start:dev
+- Cada módulo representa um domínio de negócio
+- Responsabilidades bem definidas
+- Baixo acoplamento entre módulos
 
-# production mode
-$ npm run start:prod
+### 2. **Estrutura Consistente** 🔄
+
+```
+module-name/
+├── module-name.module.ts      # Configuração do módulo
+├── module-name.controller.ts  # Endpoints HTTP
+├── module-name.service.ts     # Lógica de negócio
+├── module-name.repository.ts  # Acesso a dados (opcional)
+├── dto/                       # Data Transfer Objects
+├── entities/                  # Entidades do banco
+├── interfaces/                # Contratos TypeScript
+└── tests/                     # Testes do módulo
 ```
 
-## Run tests
+### 3. **Camadas Bem Definidas** 🏗️
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+Controller → Service → Repository → Database
+     ↓         ↓           ↓
+   DTOs    Entities    Interfaces
 ```
 
-## Deployment
+## 🚀 Configurações Recomendadas
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### **tsconfig.json**
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2020",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@common/*": ["src/common/*"],
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": false
+  }
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### **nest-cli.json**
 
-## Resources
+```json
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "tsconfig.build.json"
+  },
+  "projects": {
+    "api": {
+      "type": "application",
+      "root": ".",
+      "entryFile": "main",
+      "sourceRoot": "src",
+      "compilerOptions": {
+        "tsConfigPath": "tsconfig.build.json"
+      }
+    }
+  }
+}
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📋 Convenções de Nomenclatura
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### **Arquivos**
 
-## Support
+```
+kebab-case.type.ts
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- `user.entity.ts`
+- `create-user.dto.ts`
+- `users.controller.ts`
+- `jwt-auth.guard.ts`
 
-## Stay in touch
+### **Classes**
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+PascalCase + Suffix
+```
 
-## License
+- `UserEntity`
+- `CreateUserDto`
+- `UsersController`
+- `JwtAuthGuard`
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### **Métodos e Variáveis**
+
+```
+camelCase
+```
+
+- `findUserById()`
+- `createNewUser()`
+- `isEmailValid`
+
+### **Constantes**
+
+```
+SCREAMING_SNAKE_CASE
+```
+
+- `JWT_SECRET`
+- `DATABASE_URL`
+- `MAX_FILE_SIZE`
+
+## 🛡️ Segurança e Validação
+
+### **Environment Variables**
+
+```typescript
+// config/app.config.ts
+export const appConfig = () => ({
+  port: parseInt(process.env.PORT, 10) || 3000,
+  database: {
+    host: process.env.DATABASE_HOST,
+    port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+  },
+});
+```
+
+### **Global Validation Pipe**
+
+```typescript
+// main.ts
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+  }),
+);
+```
+
+## 🧪 Estrutura de Testes
+
+### **Tipos de Teste**
+
+```
+unit tests          → *.spec.ts
+integration tests   → *.integration.spec.ts
+e2e tests          → *.e2e-spec.ts
+```
+
+### **Organização**
+
+```
+src/modules/users/
+├── users.service.ts
+├── tests/
+│   ├── users.service.spec.ts      # Unit tests
+│   ├── users.controller.spec.ts   # Unit tests
+│   ├── users.integration.spec.ts  # Integration tests
+│   └── users.e2e-spec.ts         # E2E tests
+```
+
+## 📦 Scripts Package.json Recomendados
+
+```json
+{
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:generate": "typeorm migration:generate",
+    "migration:run": "typeorm migration:run",
+    "migration:revert": "typeorm migration:revert",
+    "seed:run": "ts-node src/database/seeds/run-seeds.ts"
+  }
+}
+```
+
+## 🔥 Dicas de Boas Práticas
+
+### 1. **Use Interfaces para Contratos**
+
+```typescript
+export interface IUserRepository {
+  findById(id: string): Promise<User>;
+  create(user: CreateUserDto): Promise<User>;
+  update(id: string, user: UpdateUserDto): Promise<User>;
+}
+```
+
+### 2. **Implemente Repository Pattern**
+
+```typescript
+@Injectable()
+export class UserRepository implements IUserRepository {
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
+}
+```
+
+### 3. **Use Mappers para Transformações**
+
+```typescript
+export class UserMapper {
+  static toDto(entity: User): UserResponseDto {
+    return {
+      id: entity.id,
+      name: entity.name,
+      email: entity.email,
+    };
+  }
+}
+```
+
+### 4. **Configure Global Exception Filter**
+
+```typescript
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    // Handle all exceptions
+  }
+}
+```
+
+### 5. **Use Interceptors para Logging**
+
+```typescript
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const request = context.switchToHttp().getRequest();
+    console.log(`${request.method} ${request.url}`);
+    return next.handle();
+  }
+}
+```
+
+---
+
+## 🎯 Benefícios desta Estrutura
+
+✅ **Escalabilidade** - Fácil adicionar novos módulos
+✅ **Manutenibilidade** - Código organizado e previsível
+✅ **Testabilidade** - Estrutura clara para testes
+✅ **Reutilização** - Componentes compartilhados bem organizados
+✅ **Padrões** - Convenções consistentes em todo projeto
+✅ **Performance** - Imports organizados e tree-shaking otimizado
+
+Esta estrutura é baseada nas melhores práticas da comunidade NestJS e pode ser adaptada conforme as necessidades específicas do seu projeto! 🚀
