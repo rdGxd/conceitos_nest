@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HashService } from './common/services/hash.service';
-import globalConfig from './globa-config/globa.config';
-import { GlobalConfigModule } from './globa-config/global-config.module';
-import { GlobalProvidersConfig } from './globa-config/global-providers.config';
+
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
+import { GlobalConfigModule } from './global-config/global-config.module';
+import { GlobalProvidersConfig } from './global-config/global-providers.config';
+import globalConfig from './global-config/global.config';
 
 @Module({
   imports: [
