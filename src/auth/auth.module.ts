@@ -1,4 +1,6 @@
 import { Global, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/users';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { BcryptService } from './hashing/bcrypt.service';
@@ -6,7 +8,7 @@ import { HashingServiceProtocol } from './hashing/hashing.service';
 
 @Global() // Torna este módulo disponível globalmente
 @Module({
-  imports: [],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [AuthController],
   providers: [
     AuthService,
