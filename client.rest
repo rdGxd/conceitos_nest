@@ -1,0 +1,113 @@
+@baseUrl = http://127.0.0.1:3000
+@authToken = {{authenticate.response.body.accessToken}}
+@refreshToken = {{authenticate.response.body.refreshToken}}
+
+# MESSAGES
+### Lista todos os messages
+GET {{baseUrl}}/messages/
+?limit=10
+&offset=0
+### Lista apenas um message
+GET {{baseUrl}}/messages/1/
+### Cria um message
+POST {{baseUrl}}/messages/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "texto": "Este texto deve chegar no e-mail. \nAqui vem na próxima linha.",
+    "paraId": 39
+}
+### Atualiza um message
+PATCH {{baseUrl}}/messages/70/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "texto": "De LUIZ para Joana",
+    "lido": true
+}
+### Apaga um message
+DELETE {{baseUrl}}/messages/70/
+Authorization: Bearer {{authToken}}
+
+
+#
+
+
+
+# Users
+### Lista todas as users
+GET {{baseUrl}}/users/
+?limit=10
+&offset=0
+Authorization: Bearer {{authToken}}
+### Lista apenas uma user
+GET {{baseUrl}}/users/14/
+Authorization: Bearer {{authToken}}
+### Cria uma user
+POST {{baseUrl}}/users/
+Content-Type: application/json
+
+{
+    "email": "luiz@email.com",
+    "password": "123456",
+    "nome": "Luiz"
+}
+### Atualiza uma user
+PATCH {{baseUrl}}/users/37/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "nome": "JOÃO"
+}
+### Apaga uma user
+DELETE {{baseUrl}}/users/37/
+Authorization: Bearer {{authToken}}
+
+
+
+#
+
+
+
+# AUTH
+### Autenticação
+# @name authenticate
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "luiz@email.com",
+    "password": "123456"
+}
+### Re-Autenticação
+# @name reAuthenticate
+POST {{baseUrl}}/auth/refresh/
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
+
+
+
+#
+
+
+
+# Upload
+### Foto da user
+POST {{baseUrl}}/users/upload-picture/
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=----BoundaryDelimitadorHttp
+
+------BoundaryDelimitadorHttp
+Content-Disposition: form-data; name="file"; filename="man.png"
+Content-Type: image/png
+
+< ./dev/images/man.png
+------BoundaryDelimitadorHttp--
+### Ver foto
+GET {{baseUrl}}/pictures/39.jpg
