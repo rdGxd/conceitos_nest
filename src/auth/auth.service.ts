@@ -1,5 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users';
 import { Repository } from 'typeorm';
@@ -14,10 +15,10 @@ export class AuthService {
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly hashingService: HashingServiceProtocol,
+    private readonly jwtService: JwtService,
   ) {}
 
   async login(loginDto: LoginDto) {
-    console.log(this.jwtConfiguration);
     let passwordIsValid = false;
     let throwError = true;
 
@@ -38,9 +39,21 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    // TODO: Fazer o novo token e entregar para o usuário na resposta
+    const accessToken = await this.jwtService.signAsync(
+      {
+        sub: user?.id,
+        email: user?.email,
+      },
+      {
+        secret: this.jwtConfiguration.secret,
+        audience: this.jwtConfiguration.signOptions.audience,
+        issuer: this.jwtConfiguration.signOptions.issuer,
+        expiresIn: this.jwtConfiguration.signOptions.expiresIn,
+      },
+    );
+
     return {
-      message: 'Login successful',
+      accessToken,
     };
   }
 }

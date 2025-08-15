@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { GlobalProvidersConfig } from './global-config/global-providers.config';
-import globalConfig from './global-config/global.config';
+import { GlobalConfigModule } from './global-config/global-config.module';
+import globalProvidersConfig from './global-config/global-providers.config';
+import globalDatabase from './global-config/global-database.config';
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
-import { GlobalConfigModule } from './global-config/global-config.module';
 
 @Module({
   imports: [
@@ -14,10 +14,10 @@ import { GlobalConfigModule } from './global-config/global-config.module';
     GlobalConfigModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(globalConfig)],
-      inject: [globalConfig.KEY],
+      imports: [ConfigModule.forFeature(globalDatabase)],
+      inject: [globalDatabase.KEY],
       useFactory: async (
-        globalConfiguration: ConfigType<typeof globalConfig>,
+        globalConfiguration: ConfigType<typeof globalDatabase>,
       ) => {
         return {
           type: globalConfiguration.database.type,
@@ -36,7 +36,7 @@ import { GlobalConfigModule } from './global-config/global-config.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [...GlobalProvidersConfig.get()],
+  providers: [...globalProvidersConfig()],
   exports: [],
 })
 export class AppModule {}

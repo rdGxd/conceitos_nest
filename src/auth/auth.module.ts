@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users';
 import { AuthController } from './auth.controller';
@@ -13,6 +14,7 @@ import { HashingServiceProtocol } from './hashing/hashing.service';
   imports: [
     TypeOrmModule.forFeature([User]),
     ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [AuthController],
   providers: [
