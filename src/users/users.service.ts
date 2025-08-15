@@ -1,9 +1,11 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { HashingServiceProtocol } from 'src/auth/hashing/hashing.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UserMapper } from 'src/users/mappers/user.mapper';
@@ -11,7 +13,6 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class UsersService {
@@ -58,7 +59,11 @@ export class UsersService {
     return this.userMapper.toResponseDto(user);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto, tokenPayloadDto: TokenPayloadDto) {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    tokenPayloadDto: TokenPayloadDto,
+  ) {
     const userData = {
       name: updateUserDto.name,
       email: updateUserDto.email,
@@ -75,14 +80,28 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
+
+    if (user.id !== tokenPayloadDto.sub) {
+      throw new ForbiddenException(
+        'Você não tem permissão para atualizar este usuário',
+      );
+    }
+
     await this.usersRepository.save(user);
     return this.userMapper.toResponseDto(user);
   }
 
   async remove(id: string, tokenPayloadDto: TokenPayloadDto) {
     const user = await this.usersRepository.findOneBy({ id });
+
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
+    }
+
+    if (user.id !== tokenPayloadDto.sub) {
+      throw new ForbiddenException(
+        'Você não tem permissão para atualizar este usuário',
+      );
     }
     const userDto = this.userMapper.toResponseDto(user);
     await this.usersRepository.remove(user);
