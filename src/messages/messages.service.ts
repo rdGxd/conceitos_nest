@@ -1,5 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { MessageMapper } from 'src/messages/mappers/message.mapper';
 import { UsersService } from 'src/users';
@@ -17,10 +22,13 @@ export class MessagesService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createMessageDto: CreateMessageDto) {
-    const { text, senderId, toId } = createMessageDto;
+  async create(
+    createMessageDto: CreateMessageDto,
+    tokenPayloadDto: TokenPayloadDto,
+  ) {
+    const { text, toId } = createMessageDto;
     // Verifica se o remetente e o destinatário existem
-    const sender = await this.usersService.findEntityById(senderId);
+    const sender = await this.usersService.findEntityById(tokenPayloadDto.sub);
     const to = await this.usersService.findEntityById(toId);
 
     // Usa o mapper para criar a entidade
@@ -57,12 +65,20 @@ export class MessagesService {
     return MessageMapper.toResponseDto(message);
   }
 
-  async update(id: string, updateMessageDto: UpdateMessageDto) {
+  async update(
+    id: string,
+    updateMessageDto: UpdateMessageDto,
+    tokenPayloadDto: TokenPayloadDto,
+  ) {
     const message = await this.messagesRepository.findOne({
       where: { id },
       relations: ['sender', 'to'],
     });
     if (!message) return this.throwNotFoundException();
+
+    if (message.sender.id !== tokenPayloadDto.sub) {
+      throw new ForbiddenException('You are not allowed to update this message');
+    }
 
     if (updateMessageDto?.text !== undefined) {
       message.text = updateMessageDto.text;
@@ -75,12 +91,18 @@ export class MessagesService {
     return MessageMapper.toResponseDto(updatedMessage);
   }
 
-  async remove(id: string) {
+  async remove(id: string, tokenPayloadDto: TokenPayloadDto) {
     const message = await this.messagesRepository.findOne({
       where: { id },
       relations: ['sender', 'to'],
     });
     if (!message) return this.throwNotFoundException();
+
+    if (message.sender.id !== tokenPayloadDto.sub) {
+      throw new ForbiddenException(
+        'You are not allowed to delete this message',
+      );
+    }
 
     const messageDto = MessageMapper.toResponseDto(message);
     await this.messagesRepository.remove(message);

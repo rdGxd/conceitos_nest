@@ -27,6 +27,7 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
+
   @UseGuards(AuthTokenGuard)
   @Get()
   findAll(@Query() paginationDto: PaginationDto, @Req() request: Request) {
@@ -34,11 +35,13 @@ export class UsersController {
     console.log(user);
     return this.usersService.findAll(paginationDto);
   }
+
   @UseGuards(AuthTokenGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
+
   @UseGuards(AuthTokenGuard)
   @Patch(':id')
   update(
@@ -48,9 +51,13 @@ export class UsersController {
   ) {
     return this.usersService.update(id, updateUserDto, tokenPayloadDto);
   }
+
   @UseGuards(AuthTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto) {
+  remove(
+    @Param('id') id: string,
+    @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
+  ) {
     return this.usersService.remove(id, tokenPayloadDto);
   }
 }

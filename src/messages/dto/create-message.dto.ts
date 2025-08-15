@@ -16,11 +16,6 @@ export class CreateMessageDto {
   readonly text: string;
 
   @IsUUID()
-  @IsNotEmpty({ message: 'Sender is required' })
-  @ApiProperty({ example: '12345' })
-  readonly senderId: string;
-
-  @IsUUID()
   @IsNotEmpty({ message: 'Recipient is required' })
   @ApiProperty({ example: '67890' })
   readonly toId: string;
