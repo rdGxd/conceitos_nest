@@ -40,16 +40,44 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const accessToken = await this.signJwtAsync<Partial<User>>(
+    return await this.createTokens(user);
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+        this.jwtConfiguration,
+      );
+
+      const user = await this.userRepository.findOneBy({ id: sub });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return await this.createTokens(user);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
+  }
+
+  private async createTokens(user: User) {
+    const accessTokenPromise = this.signJwtAsync<Partial<User>>(
       user.id,
       this.jwtConfiguration.signOptions.expiresIn,
       { email: user.email },
     );
 
-    const refreshToken = await this.signJwtAsync(
+    const refreshTokenPromise = this.signJwtAsync(
       user.id,
-      this.jwtConfiguration.signOptions.expiresIn,
+      this.jwtConfiguration.refreshToken,
     );
+
+    const [accessToken, refreshToken] = await Promise.all([
+      accessTokenPromise,
+      refreshTokenPromise,
+    ]);
 
     return {
       accessToken,
@@ -70,9 +98,5 @@ export class AuthService {
         expiresIn,
       },
     );
-  }
-
-  async refreshTokens(refreshToken: RefreshTokenDto) {
-    return true;
   }
 }
