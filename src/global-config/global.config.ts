@@ -12,9 +12,9 @@ export default registerAs('globalConfig', () => ({
       }),
     },
   ],
-  database: {
-    config: {
-      type: process.env.DATABASE_TYPE as 'postgres',
+  typeorm: {
+    useFactory: () => ({
+      type: process.env.DATABASE_TYPE as any,
       host: process.env.DATABASE_HOST,
       port: Number(process.env.DATABASE_PORT),
       username: process.env.DATABASE_USER,
@@ -22,7 +22,7 @@ export default registerAs('globalConfig', () => ({
       password: process.env.DATABASE_PASS,
       synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
       autoLoadEntities: Boolean(process.env.DATABASE_AUTOLOADENTITIES),
-    },
+    }),
   },
   environment: process.env.NODE_ENV || 'development',
 }));
