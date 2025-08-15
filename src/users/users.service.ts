@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { hashPassword } from 'src/common/utils/hash-password';
 import { UserMapper } from 'src/users/mappers/user.mapper';
 import { Repository } from 'typeorm';
+import { HashService } from './../common/services/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -16,16 +16,18 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    private readonly userMapper: UserMapper,
+    private readonly hashService: HashService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const userData = await UserMapper.toEntity(createUserDto);
+      const userData = await this.userMapper.toEntity(createUserDto);
 
       const createdUser = this.usersRepository.create(userData);
       const newUser = await this.usersRepository.save(createdUser);
 
-      return UserMapper.toResponseDto(newUser);
+      return this.userMapper.toResponseDto(newUser);
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('Email já está cadastrado');
@@ -43,7 +45,7 @@ export class UsersService {
       take: limit,
       skip: offset,
     });
-    return users.map((user) => UserMapper.toResponseDto(user));
+    return users.map((user) => this.userMapper.toResponseDto(user));
   }
 
   async findOne(id: string) {
@@ -52,15 +54,23 @@ export class UsersService {
       throw new NotFoundException('Usuário não encontrado');
     }
 
-    return UserMapper.toResponseDto(user);
+    return this.userMapper.toResponseDto(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
+    const userExists = await this.usersRepository.findOneBy({ id });
+
+    if (!userExists) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
     const userData = {
-      name: updateUserDto.name,
-      email: updateUserDto.email,
-      password:
-        updateUserDto.password && (await hashPassword(updateUserDto.password)),
+      name: updateUserDto.name ?? userExists.name,
+      email: updateUserDto.email ?? userExists.email,
+      password: updateUserDto.password
+        ? await this.hashService.hash(updateUserDto.password)
+        : userExists.password,
+      role: updateUserDto.role ?? userExists.role,
     };
 
     const user = await this.usersRepository.preload({ id, ...userData });
@@ -69,7 +79,7 @@ export class UsersService {
       throw new NotFoundException('Usuário não encontrado');
     }
     await this.usersRepository.save(user);
-    return UserMapper.toResponseDto(user);
+    return this.userMapper.toResponseDto(user);
   }
 
   async remove(id: string) {
@@ -77,7 +87,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
-    const userDto = UserMapper.toResponseDto(user);
+    const userDto = this.userMapper.toResponseDto(user);
     await this.usersRepository.remove(user);
     return userDto;
   }

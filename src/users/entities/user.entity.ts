@@ -28,7 +28,7 @@ export class User {
   @Column({ nullable: true })
   @MinLength(5)
   @MaxLength(255)
-  passwordHash: string;
+  password: string;
 
   @Column({ nullable: true, type: 'enum', enum: UserRole })
   role: UserRole;

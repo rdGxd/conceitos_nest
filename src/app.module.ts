@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { HashService } from './common/services/hash.service';
 import { GlobalProvidersConfig } from './config/global-providers.config';
 import globalConfig from './globa-config/globa.config';
 import { GlobalConfigModule } from './globa-config/global-config.module';
@@ -33,7 +34,7 @@ import { UsersModule } from './users/users.module';
     MessagesModule,
   ],
   controllers: [],
-  providers: [...GlobalProvidersConfig.get()],
-  exports: [],
+  providers: [...GlobalProvidersConfig.get(), HashService],
+  exports: [HashService],
 })
 export class AppModule {}
