@@ -1,16 +1,18 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HashService } from './common/services/hash.service';
+import { AuthModule } from './auth/auth.module';
+import { HashingServiceProtocol } from './auth/hashing/hashing.service';
 
-import { MessagesModule } from './messages/messages.module';
-import { UsersModule } from './users/users.module';
 import { GlobalConfigModule } from './global-config/global-config.module';
 import { GlobalProvidersConfig } from './global-config/global-providers.config';
 import globalConfig from './global-config/global.config';
+import { MessagesModule } from './messages/messages.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    AuthModule,
     GlobalConfigModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
@@ -35,7 +37,7 @@ import globalConfig from './global-config/global.config';
     MessagesModule,
   ],
   controllers: [],
-  providers: [...GlobalProvidersConfig.get(), HashService],
-  exports: [HashService],
+  providers: [...GlobalProvidersConfig.get(), HashingServiceProtocol],
+  exports: [HashingServiceProtocol],
 })
 export class AppModule {}

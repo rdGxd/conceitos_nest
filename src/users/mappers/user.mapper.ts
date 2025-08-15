@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { HashService } from 'src/common/services/hash.service';
+import { HashingServiceProtocol } from 'src/auth/hashing/hashing.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ResponseUserDto } from 'src/users/dto/response-user.dto';
 import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class UserMapper {
-  constructor(private readonly hashService: HashService) {}
+  constructor(private readonly hashService: HashingServiceProtocol) {}
   async toEntity(dto: CreateUserDto): Promise<User> {
     const entity = plainToInstance(User, {
       name: dto.name,

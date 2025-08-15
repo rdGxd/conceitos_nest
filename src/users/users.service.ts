@@ -4,20 +4,20 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { HashingServiceProtocol } from 'src/auth/hashing/hashing.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { UserMapper } from 'src/users/mappers/user.mapper';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { HashService } from 'src/common/services/hash.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly userMapper: UserMapper,
-    private readonly hashService: HashService,
+    private readonly hashService: HashingServiceProtocol,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
