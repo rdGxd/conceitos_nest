@@ -3,31 +3,30 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { GlobalConfigModule } from './global-config/global-config.module';
-import globalProvidersConfig from './global-config/global-providers.config';
-import globalDatabase from './global-config/global-database.config';
+import globalConfig from './global-config/global.config';
 import { MessagesModule } from './messages/messages.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    AuthModule,
     GlobalConfigModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(globalDatabase)],
-      inject: [globalDatabase.KEY],
+      imports: [ConfigModule.forFeature(globalConfig)],
+      inject: [globalConfig.KEY],
       useFactory: async (
-        globalConfiguration: ConfigType<typeof globalDatabase>,
+        globalConfiguration: ConfigType<typeof globalConfig>,
       ) => {
         return {
-          type: globalConfiguration.database.type,
-          host: globalConfiguration.database.host,
-          port: globalConfiguration.database.port,
-          username: globalConfiguration.database.username,
-          database: globalConfiguration.database.database,
-          password: globalConfiguration.database.password,
-          synchronize: globalConfiguration.database.synchronize,
-          autoLoadEntities: globalConfiguration.database.autoLoadEntities,
+          type: globalConfiguration.database.config.type,
+          host: globalConfiguration.database.config.host,
+          port: globalConfiguration.database.config.port,
+          username: globalConfiguration.database.config.username,
+          database: globalConfiguration.database.config.database,
+          password: globalConfiguration.database.config.password,
+          synchronize: globalConfiguration.database.config.synchronize,
+          autoLoadEntities:
+            globalConfiguration.database.config.autoLoadEntities,
         };
       },
     }),
@@ -36,7 +35,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
   ],
   controllers: [],
-  providers: [...globalProvidersConfig()],
+  providers: [...globalConfig().providers],
   exports: [],
 })
 export class AppModule {}

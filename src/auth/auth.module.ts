@@ -18,14 +18,16 @@ import { HashingServiceProtocol } from './hashing/hashing.service';
   ],
   controllers: [AuthController],
   providers: [
-    AuthService,
     {
       provide: HashingServiceProtocol,
       useClass: BcryptService,
     },
+    AuthService,
   ],
   exports: [
     HashingServiceProtocol, // Exporta o HashingServiceProtocol para que possa ser usado em outros módulos
+    JwtModule,
+    ConfigModule,
   ],
 })
 export class AuthModule {}
