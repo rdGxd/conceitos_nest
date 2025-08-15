@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,7 +58,7 @@ export class UsersService {
     return this.userMapper.toResponseDto(user);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto, tokenPayloadDto: TokenPayloadDto) {
     const userData = {
       name: updateUserDto.name,
       email: updateUserDto.email,
@@ -78,7 +79,7 @@ export class UsersService {
     return this.userMapper.toResponseDto(user);
   }
 
-  async remove(id: string) {
+  async remove(id: string, tokenPayloadDto: TokenPayloadDto) {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
