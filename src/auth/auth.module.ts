@@ -1,12 +1,15 @@
 import { Global, Module } from '@nestjs/common';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingServiceProtocol } from './hashing/hashing.service';
 
 @Global() // Torna este módulo disponível globalmente
 @Module({
   imports: [],
-  controllers: [],
+  controllers: [AuthController],
   providers: [
+    AuthService,
     {
       provide: HashingServiceProtocol,
       useClass: BcryptService,
