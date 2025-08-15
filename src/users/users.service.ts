@@ -17,7 +17,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly userMapper: UserMapper,
-    private readonly hashService: HashingServiceProtocol,
+    private readonly hashingService: HashingServiceProtocol,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -58,20 +58,16 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const userExists = await this.usersRepository.findOneBy({ id });
-
-    if (!userExists) {
-      throw new NotFoundException('Usuário não encontrado');
-    }
-
     const userData = {
-      name: updateUserDto.name ?? userExists.name,
-      email: updateUserDto.email ?? userExists.email,
-      password: updateUserDto.password
-        ? await this.hashService.hash(updateUserDto.password)
-        : userExists.password,
-      role: updateUserDto.role ?? userExists.role,
+      name: updateUserDto.name,
+      email: updateUserDto.email,
+      role: updateUserDto.role,
     };
+
+    if (updateUserDto?.password) {
+      const password = await this.hashingService.hash(updateUserDto.password);
+      userData['password'] = password;
+    }
 
     const user = await this.usersRepository.preload({ id, ...userData });
 
