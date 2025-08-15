@@ -6,6 +6,7 @@ import { User } from 'src/users';
 import { Repository } from 'typeorm';
 import jwtConfig from './config/jwt.config';
 import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { HashingServiceProtocol } from './hashing/hashing.service';
 
 @Injectable()
@@ -35,25 +36,43 @@ export class AuthService {
       throwError = false;
     }
 
-    if (throwError) {
+    if (throwError || !user) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const accessToken = await this.jwtService.signAsync(
+    const accessToken = await this.signJwtAsync<Partial<User>>(
+      user.id,
+      this.jwtConfiguration.signOptions.expiresIn,
+      { email: user.email },
+    );
+
+    const refreshToken = await this.signJwtAsync(
+      user.id,
+      this.jwtConfiguration.signOptions.expiresIn,
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  private async signJwtAsync<T>(sub: string, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
       {
-        sub: user?.id,
-        email: user?.email,
+        sub,
+        ...payload,
       },
       {
         secret: this.jwtConfiguration.secret,
         audience: this.jwtConfiguration.signOptions.audience,
         issuer: this.jwtConfiguration.signOptions.issuer,
-        expiresIn: this.jwtConfiguration.signOptions.expiresIn,
+        expiresIn,
       },
     );
+  }
 
-    return {
-      accessToken,
-    };
+  async refreshTokens(refreshToken: RefreshTokenDto) {
+    return true;
   }
 }
