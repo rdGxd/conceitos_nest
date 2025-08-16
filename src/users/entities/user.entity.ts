@@ -30,7 +30,12 @@ export class User {
   @MaxLength(255)
   password: string;
 
-  @Column({ nullable: true, type: 'enum', enum: UserRole })
+  @Column({
+    nullable: true,
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
   role: UserRole;
 
   @CreateDateColumn()
@@ -46,10 +51,13 @@ export class User {
   @JoinColumn({ name: 'sender' })
   sentMessages: Message[];
 
-  //  Uma Pessoa pode ter recebido muitos recados (como "to")
+  // Uma Pessoa pode ter recebido muitos recados (como "to")
   // Esses recados são relacionados ao campo "to" na entidade Message
   @OneToMany(() => Message, (message) => message.to, { cascade: true })
   // Especifica a coluna que será usada como chave estrangeira
   @JoinColumn({ name: 'to' })
   receivedMessages: Message[];
+
+  @Column({ default: true })
+  isActive: boolean;
 }

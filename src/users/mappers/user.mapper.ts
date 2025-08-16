@@ -12,7 +12,6 @@ export class UserMapper {
     const entity = plainToInstance(User, {
       name: dto.name,
       email: dto.email,
-      role: dto.role,
       password: await this.hashService.hash(dto.password),
     });
 

@@ -7,13 +7,18 @@ import {
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
+import { User } from 'src/users';
+import type { Repository } from 'typeorm';
 import jwtConfig from '../config/jwt.config';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from '../constants/auth.constants';
 
 @Injectable()
 export class AuthTokenGuard implements CanActivate {
   constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
@@ -32,7 +37,17 @@ export class AuthTokenGuard implements CanActivate {
         token,
         this.jwtConfiguration,
       );
-      request[REQUEST_TOKEN_PAYLOAD_KEY] = payload
+
+      const user = await this.userRepository.findOneBy({
+        id: payload.sub,
+        isActive: true,
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('Usuário não autorizado!');
+      }
+
+      request[REQUEST_TOKEN_PAYLOAD_KEY] = payload;
     } catch (error) {
       throw new UnauthorizedException(error.message);
     }

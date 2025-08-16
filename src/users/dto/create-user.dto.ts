@@ -2,13 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { UserRole } from 'src/common/enums/UserRole';
 
 export class CreateUserDto {
   @MinLength(3)
@@ -32,14 +30,4 @@ export class CreateUserDto {
   @ApiProperty({ description: 'A senha do usuário', minLength: 5 })
   @Expose()
   password: string;
-
-  @IsEnum(UserRole)
-  @IsNotEmpty()
-  @ApiProperty({
-    description: 'O papel do usuário',
-    enum: UserRole,
-    default: UserRole.USER,
-  })
-  @Expose()
-  role: UserRole = UserRole.USER;
 }

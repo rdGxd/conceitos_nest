@@ -67,7 +67,6 @@ export class UsersService {
     const userData = {
       name: updateUserDto.name,
       email: updateUserDto.email,
-      role: updateUserDto.role,
     };
 
     if (updateUserDto?.password) {

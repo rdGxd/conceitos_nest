@@ -23,7 +23,10 @@ export class AuthService {
     let passwordIsValid = false;
     let throwError = true;
 
-    const user = await this.userRepository.findOneBy({ email: loginDto.email });
+    const user = await this.userRepository.findOneBy({
+      email: loginDto.email,
+      isActive: true,
+    });
 
     if (user) {
       passwordIsValid = await this.hashingService.compare(
@@ -50,7 +53,10 @@ export class AuthService {
         this.jwtConfiguration,
       );
 
-      const user = await this.userRepository.findOneBy({ id: sub });
+      const user = await this.userRepository.findOneBy({
+        id: sub,
+        isActive: true,
+      });
 
       if (!user) {
         throw new UnauthorizedException('User not found');
