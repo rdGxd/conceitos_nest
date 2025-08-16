@@ -9,13 +9,11 @@ import { User } from 'src/users/entities/user.entity';
 export class UserMapper {
   constructor(private readonly hashService: HashingServiceProtocol) {}
   async toEntity(dto: CreateUserDto): Promise<User> {
-    const entity = plainToInstance(User, {
-      name: dto.name,
+    return plainToInstance(User, {
+      name: dto.name, 
       email: dto.email,
       password: await this.hashService.hash(dto.password),
     });
-
-    return entity;
   }
 
   toResponseDto(entity: User): ResponseUserDto {

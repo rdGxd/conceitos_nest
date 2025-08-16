@@ -31,6 +31,7 @@ export class UsersService {
 
       return this.userMapper.toResponseDto(newUser);
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.code === '23505') {
         throw new ConflictException('Email já está cadastrado');
       }
@@ -70,8 +71,9 @@ export class UsersService {
     };
 
     if (updateUserDto?.password) {
-      const password = await this.hashingService.hash(updateUserDto.password);
-      userData['password'] = password;
+      userData['password'] = await this.hashingService.hash(
+        updateUserDto.password,
+      );
     }
 
     const user = await this.usersRepository.preload({ id, ...userData });

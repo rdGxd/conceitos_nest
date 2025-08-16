@@ -1,9 +1,8 @@
-import
-  {
-    ForbiddenException,
-    Injectable,
-    NotFoundException,
-  } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
@@ -78,7 +77,9 @@ export class MessagesService {
     if (!message) return this.throwNotFoundException();
 
     if (message.sender.id !== tokenPayloadDto.sub) {
-      throw new ForbiddenException('You are not allowed to update this message');
+      throw new ForbiddenException(
+        'You are not allowed to update this message',
+      );
     }
 
     if (updateMessageDto?.text !== undefined) {

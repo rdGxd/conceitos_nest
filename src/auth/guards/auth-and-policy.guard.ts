@@ -13,9 +13,6 @@ export class AuthAndPolicyGuard implements CanActivate {
     const isAuthValid = await this.authTokenGuard.canActivate(context);
     if (!isAuthValid) return false;
 
-    const isPolicyValid = await this.routePolicyGuard.canActivate(context);
-    if (!isPolicyValid) return false;
-
-    return true;
+    return this.routePolicyGuard.canActivate(context);
   }
 }

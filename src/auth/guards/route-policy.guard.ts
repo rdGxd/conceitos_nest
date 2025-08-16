@@ -24,26 +24,21 @@ export class RoutePolicyGuard implements CanActivate {
     // Se a rota não requer policy, libera
     if (!routePolicyRequired) return true;
 
-    const tokenPayload = context.switchToHttp().getRequest()[
-      REQUEST_TOKEN_PAYLOAD_KEY
-    ];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const tokenPayload =
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      context.switchToHttp().getRequest()[REQUEST_TOKEN_PAYLOAD_KEY];
     if (!tokenPayload) {
       throw new UnauthorizedException(
         `Rota requer permissão especial. Usuário não logado.`,
       );
     }
-
-    const { user }: { user: User } = tokenPayload;
-    const userPolicies = user.routePolicies ?? [];
-
     // Normaliza para array sempre
-    const requiredPolicies = ([] as RoutePolicies[]).concat(
-      routePolicyRequired,
-    );
-
-    const hasPermission = requiredPolicies.every((p) =>
-      userPolicies.includes(p),
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { user }: { user: User } = tokenPayload,
+      userPolicies = user.routePolicies ?? [],
+      requiredPolicies = ([] as RoutePolicies[]).concat(routePolicyRequired),
+      hasPermission = requiredPolicies.every((p) => userPolicies.includes(p));
 
     if (!hasPermission) {
       throw new UnauthorizedException(
