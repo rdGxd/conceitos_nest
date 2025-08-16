@@ -13,6 +13,7 @@ export class UserMapper {
       name: dto.name,
       email: dto.email,
       password: await this.hashService.hash(dto.password),
+      routePolicies: dto.routePolicies,
     });
 
     return entity;

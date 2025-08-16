@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
+import type { RoutePolicies } from 'src/auth/enums/route-policies.enum';
 
 export class ResponseUserDto {
   @Expose()
@@ -21,4 +22,11 @@ export class ResponseUserDto {
   @Expose()
   @ApiProperty({ example: '2022-01-01T00:00:00Z', required: false })
   updatedAt?: Date;
+
+  @Expose()
+  @ApiProperty({
+    example: ['createMessage', 'findOneMessage'],
+    required: false,
+  })
+  routePolicies: RoutePolicies[];
 }

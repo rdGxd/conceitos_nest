@@ -2,11 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { RoutePolicies } from 'src/auth/enums/route-policies.enum';
 
 export class CreateUserDto {
   @MinLength(3)
@@ -30,4 +32,7 @@ export class CreateUserDto {
   @ApiProperty({ description: 'A senha do usuário', minLength: 5 })
   @Expose()
   password: string;
+
+  @IsEnum(RoutePolicies, { each: true })
+  routePolicies: RoutePolicies[];
 }

@@ -1,4 +1,5 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
+import { RoutePolicies } from 'src/auth/enums/route-policies.enum';
 import { Message } from 'src/messages/entities/message.entity';
 import {
   Column,
@@ -51,4 +52,7 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ type: 'simple-array', default: [] })
+  routePolicies: RoutePolicies[];
 }
