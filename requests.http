@@ -46,8 +46,7 @@ Content-Type: application/json
 {
   "email": "user1_{{$timestamp}}@teste.com",
   "password": "123456",
-  "name": "Novo Usuário 1",
-  "routePolicies": ["findOneMessage"]
+  "name": "Novo Usuário 1"
 }
 ### Criar segundo usuário
 # @name createSecondUser
@@ -106,7 +105,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "text": "De Rodrigo para o usuário criado",
+  "text": "De Rodrigo para o usuário criado {{$timestamp}}",
   "isRead": true
 }
 
