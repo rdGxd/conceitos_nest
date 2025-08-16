@@ -1,0 +1,133 @@
+@baseUrl = http://127.0.0.1:3000
+@authToken = {{authenticate.response.body.accessToken}}
+@refreshToken = {{authenticate.response.body.refreshToken}}
+@userId = {{createUser.response.body.id}}
+@secondUserId = {{createSecondUser.response.body.id}}
+@messageId = {{createMessage.response.body.id}}
+
+# =====================
+# AUTH
+# =====================
+
+### Login
+# @name authenticate
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "rodrigo@email.com",
+  "password": "123456"
+}
+
+### Refresh Token
+# @name reAuthenticate
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+# =====================
+# USERS
+# =====================
+
+### Listar todos os usuários (paginação)
+GET {{baseUrl}}/users?limit=10&offset=0
+Authorization: Bearer {{authToken}}
+
+### Criar primeiro usuário
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "usuario{{$timestamp}}@teste.com",
+  "password": "123456",
+  "nome": "Novo Usuário 1"
+}
+
+### Criar segundo usuário
+# @name createSecondUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "usuario{{$timestamp}}2@teste.com",
+  "password": "123456",
+  "nome": "Novo Usuário 2"
+}
+
+### Buscar usuário criado
+GET {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{authToken}}
+
+### Atualizar usuário criado
+PATCH {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "nome": "Nome Atualizado"
+}
+
+### Deletar usuário criado
+DELETE {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{authToken}}
+
+# =====================
+# MESSAGES
+# =====================
+
+### Listar todas as mensagens (paginação)
+GET {{baseUrl}}/messages?limit=10&offset=0
+Authorization: Bearer {{authToken}}
+
+### Criar mensagem para o segundo usuário
+# @name createMessage
+POST {{baseUrl}}/messages
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "texto": "Este texto deve chegar no e-mail.\nAqui vem na próxima linha.",
+  "paraId": {{secondUserId}}
+}
+
+### Buscar mensagem criada
+GET {{baseUrl}}/messages/{{messageId}}
+Authorization: Bearer {{authToken}}
+
+### Atualizar mensagem criada
+PATCH {{baseUrl}}/messages/{{messageId}}
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "texto": "De Rodrigo para o usuário criado",
+  "lido": true
+}
+
+### Deletar mensagem criada
+DELETE {{baseUrl}}/messages/{{messageId}}
+Authorization: Bearer {{authToken}}
+
+# =====================
+# UPLOAD
+# =====================
+
+### Upload de foto do usuário criado
+POST {{baseUrl}}/users/upload-picture
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=----BoundaryDelimitadorHttp
+
+------BoundaryDelimitadorHttp
+Content-Disposition: form-data; name="file"; filename="man.png"
+Content-Type: image/png
+
+< ./dev/images/man.png
+------BoundaryDelimitadorHttp--
+
+### Visualizar foto do usuário criado
+GET {{baseUrl}}/pictures/{{userId}}.jpg
+Authorization: Bearer {{authToken}}

@@ -15,28 +15,31 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  @ApiProperty({ description: 'The name of the user', maxLength: 100 })
+  @ApiProperty({ description: 'O nome do usuário', maxLength: 100 })
   @Expose()
   name: string;
 
   @IsEmail()
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: 'The email of the user' })
+  @ApiProperty({ description: 'O email do usuário' })
   @Expose()
   email: string;
 
-  // @IsStrongPassword({ minLength: 5, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
   @MinLength(5)
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ description: 'The password of the user', minLength: 5 })
+  @ApiProperty({ description: 'A senha do usuário', minLength: 5 })
   @Expose()
   password: string;
 
   @IsEnum(UserRole)
   @IsNotEmpty()
-  @ApiProperty({ description: 'The role of the user', enum: UserRole })
+  @ApiProperty({
+    description: 'O papel do usuário',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
   @Expose()
-  role: UserRole;
+  role: UserRole = UserRole.USER;
 }
