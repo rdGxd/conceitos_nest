@@ -47,7 +47,7 @@ Content-Type: application/json
   "email": "user1_{{$timestamp}}@teste.com",
   "password": "123456",
   "name": "Novo Usuário 1",
-  "routePolicies": ["createMessage", "findOneMessage"]
+  "routePolicies": ["findOneMessage"]
 }
 ### Criar segundo usuário
 # @name createSecondUser

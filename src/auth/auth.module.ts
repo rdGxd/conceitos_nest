@@ -8,6 +8,8 @@ import { AuthService } from './auth.service';
 import jwtConfig from './config/jwt.config';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingServiceProtocol } from './hashing/hashing.service';
+import { AuthTokenGuard } from './guards/auth-token.guard';
+import { RoutePolicyGuard } from './guards/route-policy.guard';
 
 @Global() // Torna este módulo disponível globalmente
 @Module({
@@ -23,11 +25,15 @@ import { HashingServiceProtocol } from './hashing/hashing.service';
       useClass: BcryptService,
     },
     AuthService,
+    AuthTokenGuard,
+    RoutePolicyGuard,
   ],
   exports: [
     HashingServiceProtocol, // Exporta o HashingServiceProtocol para que possa ser usado em outros módulos
     JwtModule,
     ConfigModule,
+    AuthTokenGuard,
+    RoutePolicyGuard,
   ],
 })
 export class AuthModule {}
