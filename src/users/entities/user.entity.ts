@@ -1,18 +1,20 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
-import {
-  RoutePolicies,
-  USER_POLICIES,
-} from 'src/auth/enums/route-policies.enum';
+import
+  {
+    RoutePolicies,
+    USER_POLICIES,
+  } from 'src/auth/enums/route-policies.enum';
 import { Message } from 'src/messages/entities/message.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import
+  {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+  } from 'typeorm';
 
 @Entity()
 export class User {
