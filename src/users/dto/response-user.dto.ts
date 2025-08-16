@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { UserRole } from 'src/common/enums/UserRole';
 
 export class ResponseUserDto {
   @Expose()
@@ -22,8 +21,4 @@ export class ResponseUserDto {
   @Expose()
   @ApiProperty({ example: '2022-01-01T00:00:00Z', required: false })
   updatedAt?: Date;
-
-  @Expose()
-  @ApiProperty({ enum: UserRole, example: UserRole.USER })
-  role: UserRole;
 }

@@ -4,6 +4,8 @@
 @userId = {{createUser.response.body.id}}
 @secondUserId = {{createSecondUser.response.body.id}}
 @messageId = {{createMessage.response.body.id}}
+@user1 = {{createUser.response.body.email}}
+@user2 = {{createSecondUser.response.body.email}}
 
 # =====================
 # AUTH
@@ -15,7 +17,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "rodrigo@email.com",
+  "email": "{{user1}}",
   "password": "123456"
 }
 
@@ -42,7 +44,7 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "email": "usuario{{$timestamp}}1@teste.com",
+  "email": "user1_{{$timestamp}}@teste.com",
   "password": "123456",
   "name": "Novo Usuário 1"
 }
@@ -52,7 +54,7 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "email": "usuario{{$timestamp}}2@teste.com",
+  "email": "user2_{{$timestamp}}@teste.com",
   "password": "123456",
   "name": "Novo Usuário 2"
 }
@@ -89,8 +91,8 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "texto": "Este texto deve chegar no e-mail.\nAqui vem na próxima linha.",
-  "paraId": {{secondUserId}}
+  "text": "{{$timestamp}} Este text deve chegar no e-mail",
+  "toId": "{{secondUserId}}"
 }
 
 ### Buscar mensagem criada
@@ -103,8 +105,8 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "texto": "De Rodrigo para o usuário criado",
-  "lido": true
+  "text": "De Rodrigo para o usuário criado",
+  "isRead": true
 }
 
 ### Deletar mensagem criada

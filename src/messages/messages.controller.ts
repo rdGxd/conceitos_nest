@@ -10,16 +10,19 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
+import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { RoutePolicies } from 'src/auth/enums/route-policies.enum';
 import { AuthTokenGuard } from 'src/auth/guards/auth-token.guard';
+import { RoutePolicyGuard } from 'src/auth/guards/route-policy.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload.param';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { ParseStringUUIDPipe } from 'src/common/pipes/parse-string-uuid.pipe';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
 
+@UseGuards(RoutePolicyGuard)
 @Controller('messages')
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
@@ -34,7 +37,7 @@ export class MessagesController {
   }
 
   @Get()
-  @UseGuards(IsAdminGuard)
+  @SetRoutePolicy(RoutePolicies.findAllMessages)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.messagesService.findAll(paginationDto);
   }

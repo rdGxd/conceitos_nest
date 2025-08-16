@@ -1,5 +1,4 @@
 import { IsEmail, MaxLength, MinLength } from 'class-validator';
-import { UserRole } from 'src/common/enums/UserRole';
 import { Message } from 'src/messages/entities/message.entity';
 import {
   Column,
@@ -29,14 +28,6 @@ export class User {
   @MinLength(5)
   @MaxLength(255)
   password: string;
-
-  @Column({
-    nullable: true,
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.USER,
-  })
-  role: UserRole;
 
   @CreateDateColumn()
   createdAt?: Date;
