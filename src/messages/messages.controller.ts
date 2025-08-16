@@ -22,11 +22,11 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from './messages.service';
 
 @Controller('messages')
+@UseGuards(AuthAndPolicyGuard)
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
   @Post()
-  @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.createMessage)
   create(
     @Body() createMessageDto: CreateMessageDto,
@@ -36,14 +36,12 @@ export class MessagesController {
   }
 
   @Get()
-  @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.findAllMessages)
   findAll(@Query() paginationDto: PaginationDto) {
     return this.messagesService.findAll(paginationDto);
   }
 
   @Get(':id')
-  @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.findOneMessage)
   @UsePipes(ParseStringUUIDPipe)
   findOne(@Param('id') id: string) {
@@ -51,7 +49,6 @@ export class MessagesController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.updateMessage)
   update(
     @Param('id') id: string,
@@ -62,7 +59,6 @@ export class MessagesController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.deleteMessage)
   remove(
     @Param('id') id: string,
