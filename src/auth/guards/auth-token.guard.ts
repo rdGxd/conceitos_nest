@@ -4,15 +4,15 @@ import {
   Inject,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import type { ConfigType } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Request } from 'express';
-import { User } from 'src/users';
-import type { Repository } from 'typeorm';
-import jwtConfig from '../config/jwt.config';
-import { REQUEST_TOKEN_PAYLOAD_KEY } from '../constants/auth.constants';
+} from "@nestjs/common";
+import type { ConfigType } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Request } from "express";
+import { User } from "src/users";
+import type { Repository } from "typeorm";
+import jwtConfig from "../config/jwt.config";
+import { REQUEST_TOKEN_PAYLOAD_KEY } from "../constants/auth.constants";
 
 @Injectable()
 export class AuthTokenGuard implements CanActivate {
@@ -29,7 +29,7 @@ export class AuthTokenGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('Não logado');
+      throw new UnauthorizedException("Não logado");
     }
 
     try {
@@ -46,11 +46,11 @@ export class AuthTokenGuard implements CanActivate {
       });
 
       if (!user) {
-        throw new UnauthorizedException('Usuário não autorizado!');
+        throw new UnauthorizedException("Usuário não autorizado!");
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      payload['user'] = user;
+      payload["user"] = user;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       request[REQUEST_TOKEN_PAYLOAD_KEY] = payload;
@@ -62,6 +62,6 @@ export class AuthTokenGuard implements CanActivate {
   }
 
   extractTokenFromHeader(context: Request): string | undefined {
-    return context.headers['authorization']?.split(' ')[1] || undefined;
+    return context.headers["authorization"]?.split(" ")[1] || undefined;
   }
 }

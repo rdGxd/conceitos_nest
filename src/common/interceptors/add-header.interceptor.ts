@@ -3,8 +3,8 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { Observable } from 'rxjs';
+} from "@nestjs/common";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class AddHeaderInterceptor implements NestInterceptor {
@@ -13,7 +13,7 @@ export class AddHeaderInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     const response = context.switchToHttp().getResponse();
-    response.setHeader('X-Custom-Header', 'Custom Value');
+    response.setHeader("X-Custom-Header", "Custom Value");
     return next.handle();
   }
 }

@@ -24,7 +24,7 @@ export interface IRegexProcessor {
 export abstract class RegexProcessorBase {
   // ✅ Implementação compartilhada
   protected normalizeInput(str: string): string {
-    return str?.trim().toLowerCase() || '';
+    return str?.trim().toLowerCase() || "";
   }
 
   // ✅ Template method
@@ -33,7 +33,7 @@ export abstract class RegexProcessorBase {
     const validated = this.validate(normalized);
 
     if (!validated) {
-      throw new Error('Input inválido');
+      throw new Error("Input inválido");
     }
 
     return this.execute(normalized);

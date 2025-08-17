@@ -1,17 +1,17 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { NextFunction, Request, Response } from "express";
 
 @Injectable()
 export class SimpleMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const authorization = req.headers['authorization'];
+    const authorization = req.headers["authorization"];
 
     if (authorization) {
       // Lógica para validar o token de autorização
-      req['user'] = {
+      req["user"] = {
         id: 1,
-        name: 'John Doe',
-        role: 'admin',
+        name: "John Doe",
+        role: "admin",
       };
     }
 
@@ -22,6 +22,6 @@ export class SimpleMiddleware implements NestMiddleware {
 
     next(); // Chama o próximo middleware ou rota
 
-    res.on('finish', () => {});
+    res.on("finish", () => {});
   }
 }

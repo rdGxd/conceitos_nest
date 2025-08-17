@@ -4,8 +4,8 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { catchError, throwError } from 'rxjs';
+} from "@nestjs/common";
+import { catchError, throwError } from "rxjs";
 
 @Injectable()
 export class ErrorHandlingInterceptor implements NestInterceptor {
@@ -13,11 +13,11 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError((error) => {
         return throwError(() => {
-          if (error.name == 'NotFoundException') {
-            return new BadRequestException('Mensagem não encontrada');
+          if (error.name == "NotFoundException") {
+            return new BadRequestException("Mensagem não encontrada");
           }
 
-          return new BadRequestException('Ocorreu um erro desconhecido');
+          return new BadRequestException("Ocorreu um erro desconhecido");
         });
       }),
     );

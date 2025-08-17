@@ -1,11 +1,11 @@
-import { ValidationPipe } from '@nestjs/common';
-import { registerAs } from '@nestjs/config';
+import { ValidationPipe } from "@nestjs/common";
+import { registerAs } from "@nestjs/config";
 
-export default registerAs('globalConfig', () => {
+export default registerAs("globalConfig", () => {
   return {
     providers: [
       {
-        provide: 'APP_PIPE',
+        provide: "APP_PIPE",
         useValue: new ValidationPipe({
           transform: false,
           whitelist: true,
@@ -23,16 +23,16 @@ export default registerAs('globalConfig', () => {
           port: Number(process.env.DATABASE_PORT),
           synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
           type: process.env.DATABASE_TYPE as
-            | 'postgres'
-            | 'mysql'
-            | 'sqlite'
-            | 'mariadb'
-            | 'mongodb'
-            | 'mssql',
+            | "postgres"
+            | "mysql"
+            | "sqlite"
+            | "mariadb"
+            | "mongodb"
+            | "mssql",
           username: process.env.DATABASE_USER,
         };
       },
     },
-    environment: process.env.NODE_ENV || 'development',
+    environment: process.env.NODE_ENV || "development",
   };
 });

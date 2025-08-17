@@ -3,14 +3,14 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import type { User } from 'src/users';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import type { User } from "src/users";
 import {
   REQUEST_TOKEN_PAYLOAD_KEY,
   ROUTE_POLICY_KEY,
-} from '../constants/auth.constants';
-import type { RoutePolicies } from '../enums/route-policies.enum';
+} from "../constants/auth.constants";
+import type { RoutePolicies } from "../enums/route-policies.enum";
 
 @Injectable()
 export class RoutePolicyGuard implements CanActivate {
@@ -42,7 +42,7 @@ export class RoutePolicyGuard implements CanActivate {
 
     if (!hasPermission) {
       throw new UnauthorizedException(
-        `Usuário não tem a permissão necessária: ${requiredPolicies.join(', ')}`,
+        `Usuário não tem a permissão necessária: ${requiredPolicies.join(", ")}`,
       );
     }
 

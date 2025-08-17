@@ -3,8 +3,8 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { Observable, of, tap } from 'rxjs';
+} from "@nestjs/common";
+import { Observable, of, tap } from "rxjs";
 
 @Injectable()
 export class SimpleCacheInterceptor implements NestInterceptor {

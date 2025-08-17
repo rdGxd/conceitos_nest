@@ -1,13 +1,13 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import type { ConfigType } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users';
-import { Repository } from 'typeorm';
-import jwtConfig from './config/jwt.config';
-import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { HashingServiceProtocol } from './hashing/hashing.service';
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import type { ConfigType } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "src/users";
+import { Repository } from "typeorm";
+import jwtConfig from "./config/jwt.config";
+import { LoginDto } from "./dto/login.dto";
+import { RefreshTokenDto } from "./dto/refresh-token.dto";
+import { HashingServiceProtocol } from "./hashing/hashing.service";
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
     }
 
     if (throwError || !user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
     return await this.createTokens(user);
@@ -61,7 +61,7 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new UnauthorizedException('User not found');
+        throw new UnauthorizedException("User not found");
       }
 
       return await this.createTokens(user);

@@ -1,9 +1,9 @@
-import { IsEmail, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, MaxLength, MinLength } from "class-validator";
 import {
   RoutePolicies,
   USER_POLICIES,
-} from 'src/auth/enums/route-policies.enum';
-import { Message } from 'src/messages/entities/message.entity';
+} from "src/auth/enums/route-policies.enum";
+import { Message } from "src/messages/entities/message.entity";
 import {
   Column,
   CreateDateColumn,
@@ -12,11 +12,11 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column({ nullable: true })
@@ -43,21 +43,21 @@ export class User {
   // Esses recados são relacionados ao campo "sender" na entidade Message
   @OneToMany(() => Message, (message) => message.sender, { cascade: true })
   // Especifica a coluna que será usada como chave estrangeira
-  @JoinColumn({ name: 'sender' })
+  @JoinColumn({ name: "sender" })
   sentMessages: Message[];
 
   // Uma Pessoa pode ter recebido muitos recados (como "to")
   // Esses recados são relacionados ao campo "to" na entidade Message
   @OneToMany(() => Message, (message) => message.to, { cascade: true })
   // Especifica a coluna que será usada como chave estrangeira
-  @JoinColumn({ name: 'to' })
+  @JoinColumn({ name: "to" })
   receivedMessages: Message[];
 
   @Column({ default: true })
   isActive: boolean;
 
   @Column({
-    type: 'enum',
+    type: "enum",
     array: true,
     default: [...USER_POLICIES],
     enum: RoutePolicies,

@@ -1,7 +1,7 @@
-import { plainToInstance } from 'class-transformer';
-import { ResponseMessageDto } from 'src/messages/dto/response-message.dto';
-import { Message } from 'src/messages/entities/message.entity';
-import { User } from 'src/users';
+import { plainToInstance } from "class-transformer";
+import { ResponseMessageDto } from "src/messages/dto/response-message.dto";
+import { Message } from "src/messages/entities/message.entity";
+import { User } from "src/users";
 
 export class MessageMapper {
   static toEntity(text: string, sender: User, to: User): Message {

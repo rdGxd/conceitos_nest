@@ -3,8 +3,8 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-} from '@nestjs/common';
-import { tap } from 'rxjs';
+} from "@nestjs/common";
+import { tap } from "rxjs";
 
 @Injectable()
 export class TimingConnectionInterceptor implements NestInterceptor {

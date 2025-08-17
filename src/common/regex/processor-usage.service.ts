@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
-import type { IRegexProcessor } from './regex-comparison';
-import { RegexProcessorBase } from './regex-comparison';
-import { REGEX_PROCESSOR_TOKEN } from './regex.module';
+import { Inject, Injectable } from "@nestjs/common";
+import type { IRegexProcessor } from "./regex-comparison";
+import { RegexProcessorBase } from "./regex-comparison";
+import { REGEX_PROCESSOR_TOKEN } from "./regex.module";
 
 @Injectable()
 export class ProcessorUsageService {
@@ -16,10 +16,10 @@ export class ProcessorUsageService {
     private readonly abstractProcessor: RegexProcessorBase,
 
     // ==================== MÚLTIPLAS IMPLEMENTAÇÕES ====================
-    @Inject('REMOVE_SPACE_PROCESSOR')
+    @Inject("REMOVE_SPACE_PROCESSOR")
     private readonly spaceProcessor: IRegexProcessor,
 
-    @Inject('EMAIL_PROCESSOR')
+    @Inject("EMAIL_PROCESSOR")
     private readonly emailProcessor: IRegexProcessor,
   ) {}
 

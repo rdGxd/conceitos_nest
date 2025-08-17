@@ -1,6 +1,6 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { AuthTokenGuard } from './auth-token.guard';
-import { RoutePolicyGuard } from './route-policy.guard';
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
+import { AuthTokenGuard } from "./auth-token.guard";
+import { RoutePolicyGuard } from "./route-policy.guard";
 
 @Injectable()
 export class AuthAndPolicyGuard implements CanActivate {

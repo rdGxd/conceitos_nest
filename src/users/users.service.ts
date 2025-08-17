@@ -3,16 +3,16 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
-import { HashingServiceProtocol } from 'src/auth/hashing/hashing.service';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { UserMapper } from 'src/users/mappers/user.mapper';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
+import { HashingServiceProtocol } from "src/auth/hashing/hashing.service";
+import { PaginationDto } from "src/common/dto/pagination.dto";
+import { UserMapper } from "src/users/mappers/user.mapper";
+import { Repository } from "typeorm";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./entities/user.entity";
 
 @Injectable()
 export class UsersService {
@@ -32,8 +32,8 @@ export class UsersService {
       return this.userMapper.toResponseDto(newUser);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.code === '23505') {
-        throw new ConflictException('Email já está cadastrado');
+      if (error.code === "23505") {
+        throw new ConflictException("Email já está cadastrado");
       }
       throw error;
     }
@@ -43,7 +43,7 @@ export class UsersService {
     const { limit, offset } = paginationDto;
     const users = await this.usersRepository.find({
       order: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
       take: limit,
       skip: offset,
@@ -54,7 +54,7 @@ export class UsersService {
   async findOne(id: string) {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     return this.userMapper.toResponseDto(user);
@@ -71,7 +71,7 @@ export class UsersService {
     };
 
     if (updateUserDto?.password) {
-      userData['password'] = await this.hashingService.hash(
+      userData["password"] = await this.hashingService.hash(
         updateUserDto.password,
       );
     }
@@ -79,12 +79,12 @@ export class UsersService {
     const user = await this.usersRepository.preload({ id, ...userData });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     if (user.id !== tokenPayloadDto.sub) {
       throw new ForbiddenException(
-        'Você não tem permissão para atualizar este usuário',
+        "Você não tem permissão para atualizar este usuário",
       );
     }
 
@@ -96,12 +96,12 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException("Usuário não encontrado");
     }
 
     if (user.id !== tokenPayloadDto.sub) {
       throw new ForbiddenException(
-        'Você não tem permissão para atualizar este usuário',
+        "Você não tem permissão para atualizar este usuário",
       );
     }
     const userDto = this.userMapper.toResponseDto(user);
@@ -113,7 +113,7 @@ export class UsersService {
   async findEntityById(id: string): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException("Usuário não encontrado");
     }
     return user;
   }

@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth';
-import { GlobalConfigModule } from './global-config';
-import globalConfig from './global-config/global.config';
-import { MessagesModule } from './messages';
-import { UsersModule } from './users';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { AuthModule } from "./auth";
+import { GlobalConfigModule } from "./global-config";
+import globalConfig from "./global-config/global.config";
+import { MessagesModule } from "./messages";
+import { UsersModule } from "./users";
 
 @Module({
   imports: [

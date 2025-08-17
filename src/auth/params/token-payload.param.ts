@@ -1,6 +1,6 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { REQUEST_TOKEN_PAYLOAD_KEY } from '../constants/auth.constants';
-import { Request } from 'express';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { REQUEST_TOKEN_PAYLOAD_KEY } from "../constants/auth.constants";
+import { Request } from "express";
 
 export const TokenPayloadParam = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {

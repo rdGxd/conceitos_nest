@@ -1,5 +1,5 @@
-import { Expose } from 'class-transformer';
-import { User } from 'src/users/entities/user.entity';
+import { Expose } from "class-transformer";
+import { User } from "src/users/entities/user.entity";
 import {
   Column,
   CreateDateColumn,
@@ -8,34 +8,34 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   @Expose()
   id: string;
 
-  @Column({ nullable: false, type: 'varchar', length: 255 })
+  @Column({ nullable: false, type: "varchar", length: 255 })
   @Expose()
   text: string;
 
   // Muitos recados podem ser enviados por um usuário (emissor)
   @ManyToOne(() => User, {
     nullable: false,
-    onDelete: 'CASCADE', // Se User for deletado, suas mensagens também são
+    onDelete: "CASCADE", // Se User for deletado, suas mensagens também são
   })
   // Especifica a coluna que será usada como chave estrangeira
-  @JoinColumn({ name: 'senderId' })
+  @JoinColumn({ name: "senderId" })
   sender: User;
 
   // Muitos recados podem ser enviados para um usuário (destinatário)
   @ManyToOne(() => User, {
     nullable: false,
-    onDelete: 'CASCADE', // Se User for deletado, mensagens para ele também são
+    onDelete: "CASCADE", // Se User for deletado, mensagens para ele também são
   })
   // Especifica a coluna que será usada como chave estrangeira
-  @JoinColumn({ name: 'toId' })
+  @JoinColumn({ name: "toId" })
   to: User;
 
   @Column({ default: false })

@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { IRegexProcessor, RegexProcessorBase } from './regex-comparison';
+import { Injectable } from "@nestjs/common";
+import { IRegexProcessor, RegexProcessorBase } from "./regex-comparison";
 
 /**
  * ✅ Implementação com INTERFACE
@@ -9,11 +9,11 @@ import { IRegexProcessor, RegexProcessorBase } from './regex-comparison';
 @Injectable()
 export class RemoveSpaceProcessor implements IRegexProcessor {
   execute(str: string): string {
-    return str.replace(/\s+/g, '');
+    return str.replace(/\s+/g, "");
   }
 
   validate(str: string): boolean {
-    return typeof str === 'string' && str.length > 0;
+    return typeof str === "string" && str.length > 0;
   }
 }
 
@@ -26,7 +26,7 @@ export class RemoveSpaceProcessor implements IRegexProcessor {
 export class OnlyLettersProcessor extends RegexProcessorBase {
   // ✅ Só precisa implementar o método abstrato
   execute(str: string): string {
-    return str.replace(/[^a-z]/g, '');
+    return str.replace(/[^a-z]/g, "");
   }
 
   // ✅ Pode sobrescrever validação se necessário
@@ -44,11 +44,11 @@ export class EmailProcessor
   implements IRegexProcessor
 {
   execute(str: string): string {
-    return str.toLowerCase().replace(/[^a-z0-9@._-]/g, '');
+    return str.toLowerCase().replace(/[^a-z0-9@._-]/g, "");
   }
 
   // ✅ Precisa ser public para satisfazer a interface
   public validate(str: string): boolean {
-    return super.validate(str) && str.includes('@');
+    return super.validate(str) && str.includes("@");
   }
 }

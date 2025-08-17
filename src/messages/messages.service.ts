@@ -2,16 +2,16 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { MessageMapper } from 'src/messages/mappers/message.mapper';
-import { UsersService } from 'src/users';
-import { Repository } from 'typeorm';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
-import { Message } from './entities/message.entity';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
+import { PaginationDto } from "src/common/dto/pagination.dto";
+import { MessageMapper } from "src/messages/mappers/message.mapper";
+import { UsersService } from "src/users";
+import { Repository } from "typeorm";
+import { CreateMessageDto } from "./dto/create-message.dto";
+import { UpdateMessageDto } from "./dto/update-message.dto";
+import { Message } from "./entities/message.entity";
 
 @Injectable()
 export class MessagesService {
@@ -45,9 +45,9 @@ export class MessagesService {
   async findAll(paginationDto: PaginationDto) {
     const { limit, offset } = paginationDto;
     const messages = await this.messagesRepository.find({
-      relations: ['sender', 'to'],
+      relations: ["sender", "to"],
       order: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
       take: limit,
       skip: offset,
@@ -58,7 +58,7 @@ export class MessagesService {
   async findOne(id: string) {
     const message = await this.messagesRepository.findOne({
       where: { id },
-      relations: ['sender', 'to'],
+      relations: ["sender", "to"],
     });
     if (!message) return this.throwNotFoundException();
 
@@ -72,13 +72,13 @@ export class MessagesService {
   ) {
     const message = await this.messagesRepository.findOne({
       where: { id },
-      relations: ['sender', 'to'],
+      relations: ["sender", "to"],
     });
     if (!message) return this.throwNotFoundException();
 
     if (message.sender.id !== tokenPayloadDto.sub) {
       throw new ForbiddenException(
-        'You are not allowed to update this message',
+        "You are not allowed to update this message",
       );
     }
 
@@ -96,13 +96,13 @@ export class MessagesService {
   async remove(id: string, tokenPayloadDto: TokenPayloadDto) {
     const message = await this.messagesRepository.findOne({
       where: { id },
-      relations: ['sender', 'to'],
+      relations: ["sender", "to"],
     });
     if (!message) return this.throwNotFoundException();
 
     if (message.sender.id !== tokenPayloadDto.sub) {
       throw new ForbiddenException(
-        'You are not allowed to delete this message',
+        "You are not allowed to delete this message",
       );
     }
 
@@ -115,13 +115,13 @@ export class MessagesService {
     const messages = await this.messagesRepository.find({
       skip: offset,
       take: limite,
-      relations: ['sender', 'to'],
+      relations: ["sender", "to"],
     });
     return messages.map((message) => MessageMapper.toResponseDto(message));
   }
 
   throwNotFoundException() {
     // ! throw new HttpException('Message not found', HttpStatus.NOT_FOUND);
-    throw new NotFoundException('Message not found');
+    throw new NotFoundException("Message not found");
   }
 }
