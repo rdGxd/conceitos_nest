@@ -109,7 +109,7 @@ export class UsersService {
     return userDto;
   }
 
-  // Método auxiliar para retornar a entidade User (para uso interno)
+  // * Método auxiliar para retornar a entidade User (para uso interno)
   async findEntityById(id: string): Promise<User> {
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
