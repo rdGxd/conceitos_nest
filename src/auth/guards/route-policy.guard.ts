@@ -24,9 +24,7 @@ export class RoutePolicyGuard implements CanActivate {
     // Se a rota não requer policy, libera
     if (!routePolicyRequired) return true;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const tokenPayload =
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       context.switchToHttp().getRequest()[REQUEST_TOKEN_PAYLOAD_KEY];
     if (!tokenPayload) {
       throw new UnauthorizedException(
@@ -34,7 +32,6 @@ export class RoutePolicyGuard implements CanActivate {
       );
     }
     // Normaliza para array sempre
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { user }: { user: User } = tokenPayload,
       userPolicies = user.routePolicies ?? [],
       requiredPolicies = ([] as RoutePolicies[]).concat(routePolicyRequired),

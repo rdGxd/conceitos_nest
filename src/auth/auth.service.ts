@@ -48,14 +48,12 @@ export class AuthService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { sub } = await this.jwtService.verifyAsync(
         refreshTokenDto.refreshToken,
         this.jwtConfiguration,
       );
 
       const user = await this.userRepository.findOneBy({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         id: sub,
         isActive: true,
       });
@@ -66,7 +64,6 @@ export class AuthService {
 
       return await this.createTokens(user);
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new UnauthorizedException(error.message);
     }
   }

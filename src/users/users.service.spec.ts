@@ -54,6 +54,11 @@ describe("UsersService", () => {
         name: "Test User",
       };
       jest.spyOn(hashingService, "hash").mockResolvedValue("hashedPassword");
+      jest.spyOn(userMapper, "toEntity").mockReturnValue({
+        email: createUserDTo.email,
+        name: createUserDTo.name,
+        password: "hashedPassword",
+      } as User);
 
       // Act
       await userService.create(createUserDTo);

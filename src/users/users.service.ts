@@ -27,23 +27,16 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      // const userData = this.userMapper.toEntity(createUserDto);
-      // userData.password = await this.hashingService.hash(
-      //   createUserDto.password,
-      // );
-
-      const userData = {
-        email: createUserDto.email,
-        name: createUserDto.name,
-        password: await this.hashingService.hash(createUserDto.password),
-      };
+      const userData = this.userMapper.toEntity(createUserDto);
+      userData.password = await this.hashingService.hash(
+        createUserDto.password,
+      );
 
       const createdUser = this.usersRepository.create(userData);
       const newUser = await this.usersRepository.save(createdUser);
 
       return this.userMapper.toResponseDto(newUser);
     } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.code === "23505") {
         throw new ConflictException("Email já está cadastrado");
       }
