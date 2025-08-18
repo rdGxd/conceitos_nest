@@ -34,4 +34,15 @@ describe("UsersService", () => {
     expect(hashingService).toBeDefined();
     expect(userMapper).toBeDefined();
   });
+
+  describe("Create", () => {
+    test("Deve criar um novo usuário", () => {
+      // createUserDTO
+      // Hashing service tenha o método hash
+      // Saber se o hashing service foi chamado com o create pessoa dto
+      // Saber se o userRepository.create foi chamado com os dados do user
+      // Saber se o userRepository.save foi chamado com os dados do user
+      // O retorno final deve ser o user criado
+    });
+  });
 });
