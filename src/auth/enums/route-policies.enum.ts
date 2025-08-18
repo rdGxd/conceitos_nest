@@ -12,6 +12,7 @@ export enum RoutePolicies {
   createUser = "createUser",
   updateUser = "updateUser",
   deleteUser = "deleteUser",
+  uploadUser = "uploadUser",
 }
 
 // Permissões padrão para usuários comuns
@@ -23,6 +24,7 @@ export const USER_POLICIES: RoutePolicies[] = [
   RoutePolicies.deleteMessage,
   RoutePolicies.findAllUsers,
   RoutePolicies.findOneUser,
+  RoutePolicies.uploadUser,
 ];
 
 // Permissões para administradores (todas as policies)
@@ -37,4 +39,5 @@ export const ADMIN_POLICIES: RoutePolicies[] = [
   RoutePolicies.createUser,
   RoutePolicies.updateUser,
   RoutePolicies.deleteUser,
+  RoutePolicies.uploadUser,
 ];

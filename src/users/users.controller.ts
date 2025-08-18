@@ -72,6 +72,7 @@ export class UsersController {
   @Post("upload-picture")
   @UseGuards(AuthAndPolicyGuard)
   @UseInterceptors(FileInterceptor("file"))
+  @SetRoutePolicy(RoutePolicies.uploadUser)
   async uploadPicture(
     @UploadedFile(
       new ParseFilePipeBuilder()

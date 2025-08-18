@@ -21,6 +21,7 @@ export class RoutePolicyGuard implements CanActivate {
     if (!tokenPayload) {
       throw new UnauthorizedException(`Rota requer permissão especial. Usuário não logado.`);
     }
+
     // Normaliza para array sempre
     const { user }: { user: User } = tokenPayload,
       userPolicies = user.routePolicies ?? [],
