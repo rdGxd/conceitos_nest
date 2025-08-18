@@ -27,7 +27,16 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const userData = await this.userMapper.toEntity(createUserDto);
+      // const userData = this.userMapper.toEntity(createUserDto);
+      // userData.password = await this.hashingService.hash(
+      //   createUserDto.password,
+      // );
+
+      const userData = {
+        email: createUserDto.email,
+        name: createUserDto.name,
+        password: await this.hashingService.hash(createUserDto.password),
+      };
 
       const createdUser = this.usersRepository.create(userData);
       const newUser = await this.usersRepository.save(createdUser);

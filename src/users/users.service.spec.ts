@@ -2,6 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { HashingServiceProtocol } from "../auth";
+import { CreateUserDto } from "./dto/create-user.dto";
 import { User } from "./entities/user.entity";
 import { UserMapper } from "./mappers/user.mapper";
 import { UsersService } from "./users.service";
@@ -16,9 +17,18 @@ describe("UsersService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
-        { provide: getRepositoryToken(User), useValue: {} },
-        { provide: HashingServiceProtocol, useValue: {} },
-        { provide: UserMapper, useValue: {} },
+        {
+          provide: getRepositoryToken(User),
+          useValue: { create: jest.fn(), save: jest.fn() },
+        },
+        {
+          provide: HashingServiceProtocol,
+          useValue: { hash: jest.fn(), compare: jest.fn() },
+        },
+        {
+          provide: UserMapper,
+          useValue: { toEntity: jest.fn(), toResponseDto: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -36,13 +46,25 @@ describe("UsersService", () => {
   });
 
   describe("Create", () => {
-    test("Deve criar um novo usuário", () => {
-      // createUserDTO
-      // Hashing service tenha o método hash
-      // Saber se o hashing service foi chamado com o create pessoa dto
-      // Saber se o userRepository.create foi chamado com os dados do user
-      // Saber se o userRepository.save foi chamado com os dados do user
-      // O retorno final deve ser o user criado
+    test("Deve criar um novo usuário", async () => {
+      // Arrange
+      const createUserDTo: CreateUserDto = {
+        email: "test@example.com",
+        password: "password",
+        name: "Test User",
+      };
+      jest.spyOn(hashingService, "hash").mockResolvedValue("hashedPassword");
+
+      // Act
+      await userService.create(createUserDTo);
+
+      // Assert
+      expect(hashingService.hash).toHaveBeenCalledWith(createUserDTo.password);
+      expect(userRepository.create).toHaveBeenCalledWith({
+        email: createUserDTo.email,
+        name: createUserDTo.name,
+        password: "hashedPassword",
+      });
     });
   });
 });
