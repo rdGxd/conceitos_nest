@@ -8,8 +8,11 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { REQUEST_TOKEN_PAYLOAD_KEY } from "src/auth/constants/auth.constants";
 import { SetRoutePolicy } from "src/auth/decorators/set-route-policy.decorator";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
@@ -66,5 +69,19 @@ export class UsersController {
     @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
   ) {
     return this.usersService.remove(id, tokenPayloadDto);
+  }
+
+  @Post("upload-picture")
+  @UseGuards(AuthAndPolicyGuard)
+  @UseInterceptors(FileInterceptor("file"))
+  uploadPicture(@UploadedFile("file") file: Express.Multer.File) {
+    return {
+      fileName: file.fieldname,
+      originalName: file.originalname,
+      encoding: file.encoding,
+      mimetype: file.mimetype,
+      buffer: {},
+      size: file.size,
+    };
   }
 }
