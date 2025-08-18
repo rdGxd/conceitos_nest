@@ -16,17 +16,20 @@ export class ResponseUserDto {
   email: string;
 
   @Expose()
-  @ApiProperty({ example: "2022-01-01T00:00:00Z", required: false })
-  createdAt?: Date;
+  @ApiProperty({ example: "2022-01-01T00:00:00Z" })
+  createdAt: Date;
 
   @Expose()
-  @ApiProperty({ example: "2022-01-01T00:00:00Z", required: false })
-  updatedAt?: Date;
+  @ApiProperty({ example: "2022-01-01T00:00:00Z" })
+  updatedAt: Date;
 
   @Expose()
   @ApiProperty({
     example: ["createMessage", "findOneMessage"],
-    required: false,
   })
   routePolicies: RoutePolicies[];
+
+  @Expose()
+  @ApiProperty({ example: "user_picture.png", default: "" })
+  picture: string;
 }

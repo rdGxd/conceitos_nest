@@ -63,4 +63,7 @@ export class User {
     enum: RoutePolicies,
   })
   routePolicies: RoutePolicies[];
+
+  @Column({ default: "" })
+  picture: string;
 }

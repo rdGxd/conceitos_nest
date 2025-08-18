@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,8 +15,6 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import * as fs from "fs/promises";
-import * as path from "path";
 import { REQUEST_TOKEN_PAYLOAD_KEY } from "src/auth/constants/auth.constants";
 import { SetRoutePolicy } from "src/auth/decorators/set-route-policy.decorator";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
@@ -95,20 +92,6 @@ export class UsersController {
     file: Express.Multer.File,
     @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
   ) {
-    if (file.size < 1024) {
-      throw new BadRequestException("File size is too small");
-    }
-
-    const fileExtension = path
-      .extname(file.originalname)
-      .toLowerCase()
-      .substring(1);
-    const fileName = `${tokenPayloadDto.sub}.${fileExtension}`;
-    const fileFullPath = path.resolve(process.cwd(), "pictures", fileName);
-    await fs.writeFile(fileFullPath, file.buffer);
-
-    return {
-      fileFullPath,
-    };
+    return this.usersService.uploadPicture(file, tokenPayloadDto);
   }
 }

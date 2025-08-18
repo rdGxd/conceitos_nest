@@ -1,10 +1,13 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import * as fs from "fs/promises";
+import * as path from "path";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { HashingServiceProtocol } from "src/auth/hashing/hashing.service";
 import { PaginationDto } from "src/common/dto/pagination.dto";
@@ -107,6 +110,29 @@ export class UsersService {
     const userDto = this.userMapper.toResponseDto(user);
     await this.usersRepository.remove(user);
     return userDto;
+  }
+
+  async uploadPicture(
+    file: Express.Multer.File,
+    tokenPayloadDto: TokenPayloadDto,
+  ) {
+    if (file.size < 1024) {
+      throw new BadRequestException("File size is too small");
+    }
+
+    const user = await this.findEntityById(tokenPayloadDto.sub);
+
+    const fileExtension = path
+      .extname(file.originalname)
+      .toLowerCase()
+      .substring(1);
+    const fileName = `${tokenPayloadDto.sub}.${fileExtension}`;
+    const fileFullPath = path.resolve(process.cwd(), "pictures", fileName);
+    await fs.writeFile(fileFullPath, file.buffer);
+    user.picture = fileName;
+    await this.usersRepository.save(user);
+
+    return this.userMapper.toResponseDto(user);
   }
 
   // * Método auxiliar para retornar a entidade User (para uso interno)
