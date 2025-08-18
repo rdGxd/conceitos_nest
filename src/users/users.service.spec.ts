@@ -1,5 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
+import { randomUUID } from "crypto";
 import { Repository } from "typeorm";
 import { HashingServiceProtocol } from "../auth";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -53,23 +54,44 @@ describe("UsersService", () => {
         password: "password",
         name: "Test User",
       };
-      jest.spyOn(hashingService, "hash").mockResolvedValue("hashedPassword");
+      const passwordHash = "hashedPassword";
+      const newUser = {
+        id: randomUUID(),
+        email: "test@example.com",
+        password: passwordHash,
+        name: "Test User",
+      };
+
+      jest.spyOn(hashingService, "hash").mockResolvedValue(passwordHash);
       jest.spyOn(userMapper, "toEntity").mockReturnValue({
         email: createUserDTo.email,
         name: createUserDTo.name,
-        password: "hashedPassword",
+        password: passwordHash,
       } as User);
+      jest.spyOn(userRepository, "create").mockReturnValue(newUser as User);
+      jest.spyOn(userRepository, "save").mockResolvedValue(newUser as User);
+      jest.spyOn(userMapper, "toResponseDto").mockReturnValue({
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+      } as any);
 
       // Act
       await userService.create(createUserDTo);
 
       // Assert
+      // O método hashingService foi chamado com createUserDTo.password
       expect(hashingService.hash).toHaveBeenCalledWith(createUserDTo.password);
+      // O método userRepository.create foi chamado com os dados corretos
       expect(userRepository.create).toHaveBeenCalledWith({
         email: createUserDTo.email,
         name: createUserDTo.name,
-        password: "hashedPassword",
+        password: passwordHash,
       });
+      // O método userRepository.save foi chamado com o usuário correto
+      expect(userRepository.save).toHaveBeenCalledWith(newUser);
+      // O método userMapper.toResponseDto foi chamado com o usuário correto
+      expect(userMapper.toResponseDto).toHaveBeenCalledWith(newUser);
     });
   });
 });
