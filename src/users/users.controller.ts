@@ -1,9 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
+  ParseFilePipeBuilder,
   Patch,
   Post,
   Query,
@@ -77,9 +80,25 @@ export class UsersController {
   @UseGuards(AuthAndPolicyGuard)
   @UseInterceptors(FileInterceptor("file"))
   async uploadPicture(
-    @UploadedFile("file") file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: "jpeg|jpg|png|gif|webp",
+        })
+        .addMaxSizeValidator({
+          maxSize: 10 * 1024 * 1024,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
     @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
   ) {
+    if (file.size < 1024) {
+      throw new BadRequestException("File size is too small");
+    }
+
     const fileExtension = path
       .extname(file.originalname)
       .toLowerCase()
@@ -89,12 +108,7 @@ export class UsersController {
     await fs.writeFile(fileFullPath, file.buffer);
 
     return {
-      fileName: file.fieldname,
-      originalName: file.originalname,
-      encoding: file.encoding,
-      mimetype: file.mimetype,
-      buffer: {},
-      size: file.size,
+      fileFullPath,
     };
   }
 }
