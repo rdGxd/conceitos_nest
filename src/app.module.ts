@@ -1,6 +1,8 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import * as path from "path";
 import { AuthModule } from "./auth";
 import { GlobalConfigModule } from "./global-config";
 import globalConfig from "./global-config/global.config";
@@ -15,6 +17,10 @@ import { UsersModule } from "./users";
     UsersModule,
     MessagesModule,
     AuthModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(process.cwd(), "pictures"),
+      serveRoot: "/pictures",
+    }),
   ],
   controllers: [],
   providers: [...globalConfig().providers],
