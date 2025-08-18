@@ -65,10 +65,7 @@ export class UsersController {
   @Delete(":id")
   @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.deleteUser)
-  remove(
-    @Param("id") id: string,
-    @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
-  ) {
+  remove(@Param("id") id: string, @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto) {
     return this.usersService.remove(id, tokenPayloadDto);
   }
 

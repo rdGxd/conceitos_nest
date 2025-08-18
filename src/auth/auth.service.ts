@@ -29,10 +29,7 @@ export class AuthService {
     });
 
     if (user) {
-      passwordIsValid = await this.hashingService.compare(
-        loginDto.password,
-        user.password,
-      );
+      passwordIsValid = await this.hashingService.compare(loginDto.password, user.password);
     }
 
     if (passwordIsValid) {
@@ -48,10 +45,7 @@ export class AuthService {
 
   async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
-      const { sub } = await this.jwtService.verifyAsync(
-        refreshTokenDto.refreshToken,
-        this.jwtConfiguration,
-      );
+      const { sub } = await this.jwtService.verifyAsync(refreshTokenDto.refreshToken, this.jwtConfiguration);
 
       const user = await this.userRepository.findOneBy({
         id: sub,
@@ -69,21 +63,13 @@ export class AuthService {
   }
 
   private async createTokens(user: User) {
-    const accessTokenPromise = this.signJwtAsync<Partial<User>>(
-      user.id,
-      this.jwtConfiguration.signOptions.expiresIn,
-      { email: user.email },
-    );
+    const accessTokenPromise = this.signJwtAsync<Partial<User>>(user.id, this.jwtConfiguration.signOptions.expiresIn, {
+      email: user.email,
+    });
 
-    const refreshTokenPromise = this.signJwtAsync(
-      user.id,
-      this.jwtConfiguration.refreshToken,
-    );
+    const refreshTokenPromise = this.signJwtAsync(user.id, this.jwtConfiguration.refreshToken);
 
-    const [accessToken, refreshToken] = await Promise.all([
-      accessTokenPromise,
-      refreshTokenPromise,
-    ]);
+    const [accessToken, refreshToken] = await Promise.all([accessTokenPromise, refreshTokenPromise]);
 
     return {
       accessToken,

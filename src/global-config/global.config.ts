@@ -22,13 +22,7 @@ export default registerAs("globalConfig", () => {
           password: process.env.DATABASE_PASS,
           port: Number(process.env.DATABASE_PORT),
           synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE),
-          type: process.env.DATABASE_TYPE as
-            | "postgres"
-            | "mysql"
-            | "sqlite"
-            | "mariadb"
-            | "mongodb"
-            | "mssql",
+          type: process.env.DATABASE_TYPE as "postgres" | "mysql" | "sqlite" | "mariadb" | "mongodb" | "mssql",
           username: process.env.DATABASE_USER,
         };
       },

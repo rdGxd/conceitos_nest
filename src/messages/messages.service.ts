@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { PaginationDto } from "src/common/dto/pagination.dto";
@@ -22,10 +18,7 @@ export class MessagesService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(
-    createMessageDto: CreateMessageDto,
-    tokenPayloadDto: TokenPayloadDto,
-  ) {
+  async create(createMessageDto: CreateMessageDto, tokenPayloadDto: TokenPayloadDto) {
     const { text, toId } = createMessageDto;
     // Verifica se o remetente e o destinatário existem
     const sender = await this.usersService.findEntityById(tokenPayloadDto.sub);
@@ -65,11 +58,7 @@ export class MessagesService {
     return MessageMapper.toResponseDto(message);
   }
 
-  async update(
-    id: string,
-    updateMessageDto: UpdateMessageDto,
-    tokenPayloadDto: TokenPayloadDto,
-  ) {
+  async update(id: string, updateMessageDto: UpdateMessageDto, tokenPayloadDto: TokenPayloadDto) {
     const message = await this.messagesRepository.findOne({
       where: { id },
       relations: ["sender", "to"],
@@ -77,9 +66,7 @@ export class MessagesService {
     if (!message) return this.throwNotFoundException();
 
     if (message.sender.id !== tokenPayloadDto.sub) {
-      throw new ForbiddenException(
-        "You are not allowed to update this message",
-      );
+      throw new ForbiddenException("You are not allowed to update this message");
     }
 
     if (updateMessageDto?.text !== undefined) {
@@ -101,9 +88,7 @@ export class MessagesService {
     if (!message) return this.throwNotFoundException();
 
     if (message.sender.id !== tokenPayloadDto.sub) {
-      throw new ForbiddenException(
-        "You are not allowed to delete this message",
-      );
+      throw new ForbiddenException("You are not allowed to delete this message");
     }
 
     const messageDto = MessageMapper.toResponseDto(message);

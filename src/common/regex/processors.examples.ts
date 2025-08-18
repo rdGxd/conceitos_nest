@@ -39,10 +39,7 @@ export class OnlyLettersProcessor extends RegexProcessorBase {
  * ❌ Implementação HÍBRIDA - quando precisar de ambos
  */
 @Injectable()
-export class EmailProcessor
-  extends RegexProcessorBase
-  implements IRegexProcessor
-{
+export class EmailProcessor extends RegexProcessorBase implements IRegexProcessor {
   execute(str: string): string {
     return str.toLowerCase().replace(/[^a-z0-9@._-]/g, "");
   }

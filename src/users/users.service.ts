@@ -28,9 +28,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       const userData = this.userMapper.toEntity(createUserDto);
-      userData.password = await this.hashingService.hash(
-        createUserDto.password,
-      );
+      userData.password = await this.hashingService.hash(createUserDto.password);
 
       const createdUser = this.usersRepository.create(userData);
       const newUser = await this.usersRepository.save(createdUser);
@@ -65,20 +63,14 @@ export class UsersService {
     return this.userMapper.toResponseDto(user);
   }
 
-  async update(
-    id: string,
-    updateUserDto: UpdateUserDto,
-    tokenPayloadDto: TokenPayloadDto,
-  ) {
+  async update(id: string, updateUserDto: UpdateUserDto, tokenPayloadDto: TokenPayloadDto) {
     const userData = {
       name: updateUserDto.name,
       email: updateUserDto.email,
     };
 
     if (updateUserDto?.password) {
-      userData["password"] = await this.hashingService.hash(
-        updateUserDto.password,
-      );
+      userData["password"] = await this.hashingService.hash(updateUserDto.password);
     }
 
     const user = await this.usersRepository.preload({ id, ...userData });
@@ -88,9 +80,7 @@ export class UsersService {
     }
 
     if (user.id !== tokenPayloadDto.sub) {
-      throw new ForbiddenException(
-        "Você não tem permissão para atualizar este usuário",
-      );
+      throw new ForbiddenException("Você não tem permissão para atualizar este usuário");
     }
 
     await this.usersRepository.save(user);
@@ -105,29 +95,21 @@ export class UsersService {
     }
 
     if (user.id !== tokenPayloadDto.sub) {
-      throw new ForbiddenException(
-        "Você não tem permissão para atualizar este usuário",
-      );
+      throw new ForbiddenException("Você não tem permissão para atualizar este usuário");
     }
     const userDto = this.userMapper.toResponseDto(user);
     await this.usersRepository.remove(user);
     return userDto;
   }
 
-  async uploadPicture(
-    file: Express.Multer.File,
-    tokenPayloadDto: TokenPayloadDto,
-  ) {
+  async uploadPicture(file: Express.Multer.File, tokenPayloadDto: TokenPayloadDto) {
     if (file.size < 1024) {
       throw new BadRequestException("File size is too small");
     }
 
     const user = await this.findEntityById(tokenPayloadDto.sub);
 
-    const fileExtension = path
-      .extname(file.originalname)
-      .toLowerCase()
-      .substring(1);
+    const fileExtension = path.extname(file.originalname).toLowerCase().substring(1);
     const fileName = `${tokenPayloadDto.sub}.${fileExtension}`;
     const fileFullPath = path.resolve(process.cwd(), "pictures", fileName);
     await fs.writeFile(fileFullPath, file.buffer);

@@ -1,15 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-  UsePipes,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards, UsePipes } from "@nestjs/common";
 import { SetRoutePolicy } from "src/auth/decorators/set-route-policy.decorator";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { RoutePolicies } from "src/auth/enums/route-policies.enum";
@@ -28,10 +17,7 @@ export class MessagesController {
 
   @Post()
   @SetRoutePolicy(RoutePolicies.createMessage)
-  create(
-    @Body() createMessageDto: CreateMessageDto,
-    @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
-  ) {
+  create(@Body() createMessageDto: CreateMessageDto, @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto) {
     return this.messagesService.create(createMessageDto, tokenPayloadDto);
   }
 
@@ -60,10 +46,7 @@ export class MessagesController {
 
   @Delete(":id")
   @SetRoutePolicy(RoutePolicies.deleteMessage)
-  remove(
-    @Param("id") id: string,
-    @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
-  ) {
+  remove(@Param("id") id: string, @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto) {
     return this.messagesService.remove(id, tokenPayloadDto);
   }
 }

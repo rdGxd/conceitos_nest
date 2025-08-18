@@ -1,8 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import {
-  OnlyLettersProcessor,
-  RemoveSpaceProcessor,
-} from "./processors.examples";
+import { OnlyLettersProcessor, RemoveSpaceProcessor } from "./processors.examples";
 import { RegexProtocol } from "./regex.protocol";
 
 export type ClassNames = "RemoveSpaceProcessor" | "OnlyLettersProcessor";

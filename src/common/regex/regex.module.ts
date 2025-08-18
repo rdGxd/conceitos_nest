@@ -1,9 +1,5 @@
 import { Module } from "@nestjs/common";
-import {
-  EmailProcessor,
-  OnlyLettersProcessor,
-  RemoveSpaceProcessor,
-} from "./processors.examples";
+import { EmailProcessor, OnlyLettersProcessor, RemoveSpaceProcessor } from "./processors.examples";
 import { RegexProcessorBase } from "./regex-comparison";
 
 /**
