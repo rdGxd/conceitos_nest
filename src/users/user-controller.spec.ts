@@ -2,7 +2,7 @@ import { UsersController } from "./users.controller";
 
 describe("UserControllerController", () => {
   let controller: UsersController;
-  let userServiceMock = {
+  const userServiceMock = {
     findAll: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
@@ -88,7 +88,7 @@ describe("UserControllerController", () => {
 
     jest.spyOn(userServiceMock, "uploadPicture").mockResolvedValue(expected);
 
-    const result = await controller.uploadPicture(file, mockTokenPayloadDto as any);
+    const result = await controller.uploadPicture(file, mockTokenPayloadDto);
 
     expect(result).toEqual(expected);
     expect(userServiceMock.uploadPicture).toHaveBeenCalledWith(file, mockTokenPayloadDto);

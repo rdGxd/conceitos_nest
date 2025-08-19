@@ -11,9 +11,9 @@ import { UsersModule } from "./users";
 
 @Module({
   imports: [
-    GlobalConfigModule,
     ConfigModule.forRoot(),
-    TypeOrmModule.forRootAsync(globalConfig().typeorm),
+    GlobalConfigModule,
+    TypeOrmModule.forRootAsync({ useFactory: globalConfig().typeorm.useFactory }),
     UsersModule,
     MessagesModule,
     AuthModule,
