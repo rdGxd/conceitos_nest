@@ -7,11 +7,7 @@ import { User } from "src/users/entities/user.entity";
 @Injectable()
 export class UserMapper {
   toEntity(dto: CreateUserDto): User {
-    return plainToInstance(User, {
-      name: dto.name,
-      email: dto.email,
-      password: dto.password,
-    });
+    return plainToInstance(User, dto);
   }
 
   toResponseDto(entity: User): ResponseUserDto {

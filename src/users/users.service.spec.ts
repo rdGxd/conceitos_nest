@@ -1,3 +1,4 @@
+import { ConflictException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
@@ -39,7 +40,7 @@ describe("UsersService", () => {
     userMapper = module.get<UserMapper>(UserMapper);
   });
 
-  test("Deve estar definido", () => {
+  it("Deve estar definido", () => {
     expect(userService).toBeDefined();
     expect(userRepository).toBeDefined();
     expect(hashingService).toBeDefined();
@@ -47,7 +48,7 @@ describe("UsersService", () => {
   });
 
   describe("Create", () => {
-    test("Deve criar um novo usuário", async () => {
+    it("Deve criar um novo usuário", async () => {
       // Arrange
       const createUserDTo: CreateUserDto = {
         email: "test@example.com",
@@ -92,6 +93,26 @@ describe("UsersService", () => {
       expect(userRepository.save).toHaveBeenCalledWith(newUser);
       // O método userMapper.toResponseDto foi chamado com o usuário correto
       expect(userMapper.toResponseDto).toHaveBeenCalledWith(newUser);
+    });
+
+    it("Deve lançar ConflictException quando o email já existe", async () => {
+      // Simule que o usuário já existe no banco de dados
+      jest.spyOn(userMapper, "toEntity").mockReturnValue({
+        email: "existing@example.com",
+        name: "teste",
+        password: "hashedPassword",
+      } as User);
+      jest.spyOn(hashingService, "hash").mockResolvedValue("hashedPassword");
+      jest.spyOn(userRepository, "create").mockReturnValue({
+        email: "existing@example.com",
+        name: "teste",
+        password: "hashedPassword",
+      } as User);
+      jest.spyOn(userRepository, "save").mockRejectedValue({
+        code: "23505",
+      });
+
+      await expect(userService.create({} as any)).rejects.toThrow(ConflictException);
     });
   });
 });
