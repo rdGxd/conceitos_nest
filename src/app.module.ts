@@ -1,29 +1,26 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import * as path from "path";
 import { AuthModule } from "./auth";
-import { GlobalConfigModule } from "./global-config";
-import globalConfig from "./global-config/global.config";
+import { GlobalConfigModule } from "./global-config/global-config.module";
+import { typeOrmAsyncConfig } from "./global-config/typeorm.config";
 import { MessagesModule } from "./messages";
 import { UsersModule } from "./users";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: [`.env.${process.env.NODE_ENV}`, ".env"],
+      isGlobal: true,
+    }),
     GlobalConfigModule,
-    TypeOrmModule.forRootAsync({ useFactory: globalConfig().typeorm.useFactory }),
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UsersModule,
     MessagesModule,
     AuthModule,
-    ServeStaticModule.forRoot({
-      rootPath: path.resolve(process.cwd(), "pictures"),
-      serveRoot: "/pictures",
-    }),
   ],
   controllers: [],
-  providers: [...globalConfig().providers],
+  providers: [],
   exports: [],
 })
 export class AppModule {}

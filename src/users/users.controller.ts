@@ -39,8 +39,7 @@ export class UsersController {
   @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.findAllUsers)
   findAll(@Query() paginationDto: PaginationDto, @Req() request: Request) {
-    const user = request[REQUEST_TOKEN_PAYLOAD_KEY];
-    console.log(user);
+    request[REQUEST_TOKEN_PAYLOAD_KEY];
     return this.usersService.findAll(paginationDto);
   }
 
