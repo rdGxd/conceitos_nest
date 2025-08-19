@@ -1,4 +1,4 @@
-import { ConflictException } from "@nestjs/common";
+import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
@@ -21,7 +21,16 @@ describe("UsersService", () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: { create: jest.fn(), save: jest.fn() },
+          useValue: {
+            create: jest.fn(),
+            save: jest.fn(),
+            findOneBy: jest.fn(),
+            findOne: jest.fn(),
+            findAll: jest.fn(),
+            remove: jest.fn(),
+            findEntityById: jest.fn(),
+            find: jest.fn(),
+          },
         },
         {
           provide: HashingServiceProtocol,
@@ -130,6 +139,82 @@ describe("UsersService", () => {
       jest.spyOn(userRepository, "save").mockRejectedValue(new Error("Erro genérico"));
 
       await expect(userService.create({} as any)).rejects.toThrow(new Error("Erro genérico"));
+    });
+  });
+
+  describe("find One", () => {
+    it("Deve encontrar um usuário pelo ID", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+      } as any;
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(user);
+      jest.spyOn(userMapper, "toResponseDto").mockReturnValue(user);
+
+      // Act
+      const result = await userService.findOne(userId);
+
+      // Assert
+      expect(result).toEqual(user);
+    });
+
+    it("Deve lançar NotFoundException quando o usuário não é encontrado", async () => {
+      // Arrange
+      const userId = randomUUID();
+
+      jest.spyOn(userRepository, "findOne").mockResolvedValue(null);
+
+      // Act
+      await expect(userService.findOne(userId)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe("find All", () => {
+    it("Deve retornar uma lista de usuários", async () => {
+      // Arrange
+      const paginationDto = { limit: 10, offset: 0 };
+      const users = [
+        {
+          id: randomUUID(),
+          email: "user1@example.com",
+          name: "User 1",
+          password: "hashedPassword1",
+          sentMessages: [],
+          receivedMessages: [],
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          routePolicies: [],
+          picture: null,
+        } as any,
+        {
+          id: randomUUID(),
+          email: "user2@example.com",
+          name: "User 2",
+          password: "hashedPassword2",
+          sentMessages: [],
+          receivedMessages: [],
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          routePolicies: [],
+          picture: null,
+        } as any,
+      ];
+
+      jest.spyOn(userRepository, "find").mockResolvedValue(users);
+      jest.spyOn(userMapper, "toResponseDto").mockImplementation((user: any) => user);
+
+      // Act
+      const result = await userService.findAll(paginationDto);
+
+      // Assert
+      expect(result).toEqual(users);
     });
   });
 });

@@ -10,8 +10,8 @@ export class UserMapper {
     return plainToInstance(User, dto);
   }
 
-  toResponseDto(entity: User): ResponseUserDto {
-    return plainToInstance(ResponseUserDto, entity, {
+  toResponseDto(user: User): ResponseUserDto {
+    return plainToInstance(ResponseUserDto, user, {
       excludeExtraneousValues: true,
     });
   }
