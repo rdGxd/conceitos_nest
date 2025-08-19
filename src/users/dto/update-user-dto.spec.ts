@@ -10,9 +10,7 @@ describe("UpdateUserDto", () => {
     dto.routePolicies = ["createMessage", "findOneMessage"] as any;
 
     const errors = await validate(dto);
-    if (errors.length > 0) {
-      console.error("TESTE:", errors);
-    }
+
     expect(errors.length).toBe(0);
   });
 
