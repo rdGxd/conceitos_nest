@@ -1,10 +1,11 @@
-import { ConflictException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
 import { Repository } from "typeorm";
-import { HashingServiceProtocol } from "../auth";
+import { ADMIN_POLICIES, HashingServiceProtocol } from "../auth";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { ResponseUserDto } from "./dto/response-user.dto";
 import { User } from "./entities/user.entity";
 import { UserMapper } from "./mappers/user.mapper";
 import { UsersService } from "./users.service";
@@ -30,6 +31,7 @@ describe("UsersService", () => {
             remove: jest.fn(),
             findEntityById: jest.fn(),
             find: jest.fn(),
+            preload: jest.fn(),
           },
         },
         {
@@ -142,7 +144,7 @@ describe("UsersService", () => {
     });
   });
 
-  describe("find One", () => {
+  describe("Find One", () => {
     it("Deve encontrar um usuário pelo ID", async () => {
       // Arrange
       const userId = randomUUID();
@@ -174,7 +176,7 @@ describe("UsersService", () => {
     });
   });
 
-  describe("find All", () => {
+  describe("Find All", () => {
     it("Deve retornar uma lista de usuários", async () => {
       // Arrange
       const paginationDto = { limit: 10, offset: 0 };
@@ -215,6 +217,247 @@ describe("UsersService", () => {
 
       // Assert
       expect(result).toEqual(users);
+    });
+  });
+
+  describe("Update", () => {
+    it("Deve atualizar um usuário existente", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const updateUserDto = {
+        email: "updated@example.com",
+        name: "Updated User",
+        password: "newPassword",
+      };
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+      } as User;
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(user);
+      jest.spyOn(userMapper, "toEntity").mockReturnValue({
+        ...user,
+        ...updateUserDto,
+      });
+      jest.spyOn(userRepository, "preload").mockResolvedValue({
+        ...user,
+      });
+      jest.spyOn(userRepository, "save").mockResolvedValue({
+        ...user,
+        ...updateUserDto,
+      });
+      jest.spyOn(userMapper, "toResponseDto").mockReturnValue({
+        ...user,
+        ...updateUserDto,
+      } as ResponseUserDto);
+
+      // Act
+      // Mock token payload to have the same userId or admin privileges
+      const tokenPayloadDto = { sub: userId, routePolicies: [...ADMIN_POLICIES] } as any;
+      const result = await userService.update(userId, updateUserDto, tokenPayloadDto);
+
+      // Assert
+      expect(result).toEqual({
+        ...user,
+        ...updateUserDto,
+      });
+    });
+
+    it("Deve lançar NotFoundException quando o usuário não é encontrado", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const updateUserDto = {
+        email: "updated@example.com",
+        name: "Updated User",
+      };
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(null);
+
+      // Act
+      const tokenPayloadDto = { sub: userId, routePolicies: [...ADMIN_POLICIES] } as any;
+      await expect(userService.update(userId, updateUserDto, tokenPayloadDto)).rejects.toThrow(NotFoundException);
+    });
+
+    it("Deve lançar ForbiddenException quando o usuário tenta atualizar outro usuário sem permissão", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const updateUserDto = {
+        email: "updated@example.com",
+        name: "Updated User",
+      };
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+      } as User;
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(user);
+      jest.spyOn(userMapper, "toEntity").mockReturnValue({
+        ...user,
+        ...updateUserDto,
+      });
+      jest.spyOn(userRepository, "preload").mockResolvedValue({
+        ...user,
+      });
+      jest.spyOn(userRepository, "save").mockResolvedValue({
+        ...user,
+        ...updateUserDto,
+      });
+
+      // Act
+      const tokenPayloadDto = { sub: randomUUID(), routePolicies: [] } as any;
+      await expect(userService.update(userId, updateUserDto, tokenPayloadDto)).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe("Remove", () => {
+    it("Deve remover um usuário", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+      } as User;
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(user);
+      jest.spyOn(userRepository, "remove").mockResolvedValue(user);
+      jest.spyOn(userMapper, "toResponseDto").mockReturnValue(user as ResponseUserDto);
+
+      // Act
+      const tokenPayloadDto = { sub: userId, routePolicies: [...ADMIN_POLICIES] } as any;
+      const result = await userService.remove(userId, tokenPayloadDto);
+
+      // Assert
+      expect(result).toEqual(user);
+    });
+
+    it("Deve lançar um erro quando o usuário não é encontrado", async () => {
+      // Arrange
+      const userId = randomUUID();
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(null);
+
+      // Act
+      const tokenPayloadDto = { sub: userId, routePolicies: [...ADMIN_POLICIES] } as any;
+      await expect(userService.remove(userId, tokenPayloadDto)).rejects.toThrow(NotFoundException);
+    });
+
+    it("Deve lançar um erro quando um usuário tenta remover outro sem permissão", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+      } as User;
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(user);
+
+      // Act
+      const tokenPayloadDto = { sub: randomUUID(), routePolicies: [] } as any;
+      await expect(userService.remove(userId, tokenPayloadDto)).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe("Upload", () => {
+    it("Deve retornar o usuário com o campo picture atualizado", async () => {
+      // Arrange
+      const userId = randomUUID();
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+        picture: "oldPicture.jpg",
+      } as User;
+
+      // Mock file object as Express.Multer.File
+      const file = {
+        originalname: "newPicture.jpg",
+        buffer: Buffer.from("fake image data"),
+        size: 2048,
+      } as Express.Multer.File;
+
+      // Mock fs and path dependencies
+      jest.mock("fs/promises", () => ({
+        writeFile: jest.fn().mockResolvedValue(undefined),
+      }));
+      jest.mock("path", () => ({
+        extname: jest.fn((filename) => ".jpg"),
+        resolve: jest.fn(() => "/tmp/pictures/newPicture.jpg"),
+      }));
+
+      // Mock findEntityById and usersRepository.save
+      jest.spyOn(userService as any, "findEntityById").mockResolvedValue(user);
+      jest.spyOn(userRepository, "save").mockResolvedValue({
+        ...user,
+        picture: `${userId}.jpg`,
+      });
+      jest.spyOn(userMapper, "toResponseDto").mockReturnValue({
+        ...user,
+        picture: `${userId}.jpg`,
+      } as any);
+
+      // Act
+      const tokenPayloadDto = { sub: userId, routePolicies: [...ADMIN_POLICIES] } as any;
+      const result = await userService.uploadPicture(file, tokenPayloadDto);
+
+      // Assert
+      expect(result).toEqual({
+        ...user,
+        picture: `${userId}.jpg`,
+      });
+    });
+
+    it("Deve retornar um erro se o tamanho for menor que 1024", async () => {
+      // Arrange
+      const userId = randomUUID();
+
+      const file = {
+        originalname: "smallPicture.jpg",
+        buffer: Buffer.from("small"),
+        size: 512,
+      } as Express.Multer.File;
+
+      // Act
+      const tokenPayloadDto = { sub: userId, routePolicies: [...ADMIN_POLICIES] } as any;
+      await expect(userService.uploadPicture(file, tokenPayloadDto)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe("Find Entity By id", () => {
+    it("Deve retornar um usuário pelo id", async () => {
+      const userId = randomUUID();
+      const user = {
+        id: userId,
+        email: "test@example.com",
+        name: "Test User",
+        password: "hashedPassword",
+      } as User;
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(user);
+      jest.spyOn(userMapper, "toResponseDto").mockReturnValue(user as ResponseUserDto);
+
+      // Act
+      const result = await userService.findEntityById(userId);
+
+      // Assert
+      expect(result).toEqual(user);
+    });
+
+    it("Deve retornar um NotFoundException quando nao encontrar o usuário", async () => {
+      const userId = randomUUID();
+
+      jest.spyOn(userRepository, "findOneBy").mockResolvedValue(null);
+
+      // Act
+      await expect(userService.findEntityById(userId)).rejects.toThrow(NotFoundException);
     });
   });
 });
