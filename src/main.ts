@@ -1,6 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { globalPipes } from "./global-config/global-pipes.config";
+import { globalPipes } from "./config/global-pipes.config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

@@ -7,9 +7,9 @@ import path from "path";
 import request from "supertest";
 
 import { AuthModule } from "src/auth";
-import { GlobalConfigModule } from "src/global-config/global-config.module";
-import { globalPipes } from "src/global-config/global-pipes.config";
-import { typeOrmAsyncConfig } from "src/global-config/typeorm.config";
+import { GlobalConfigModule } from "src/config/global-config.module";
+import { globalPipes } from "src/config/global-pipes.config";
+import { typeOrmAsyncConfig } from "src/config/global-typeorm.config";
 import { MessagesModule } from "src/messages";
 import { CreateUserDto, UsersModule } from "src/users";
 
