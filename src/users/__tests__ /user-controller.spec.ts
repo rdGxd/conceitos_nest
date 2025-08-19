@@ -1,4 +1,4 @@
-import { UsersController } from "../users.controller";
+import { UsersController } from "../controller/users.controller";
 
 describe("UserControllerController", () => {
   let controller: UsersController;

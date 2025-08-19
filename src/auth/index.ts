@@ -1,8 +1,6 @@
-export * from "./auth.controller";
-export * from "./auth.module";
-export * from "./auth.service";
 export * from "./config/jwt.config";
 export * from "./constants/auth.constants";
+export * from "./controller/auth.controller";
 export * from "./decorators/set-route-policy.decorator";
 export * from "./dto/login.dto";
 export * from "./dto/refresh-token.dto";
@@ -13,4 +11,6 @@ export * from "./guards/auth-token.guard";
 export * from "./guards/route-policy.guard";
 export * from "./hashing/bcrypt.service";
 export * from "./hashing/hashing.service";
+export * from "./module/auth.module";
 export * from "./params/token-payload.param";
+export * from "./service/auth.service";

@@ -3,13 +3,13 @@ import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/users";
-import { AuthController } from "./auth.controller";
+import jwtConfig from "../config/jwt.config";
+import { AuthController } from "../controller/auth.controller";
+import { AuthTokenGuard } from "../guards/auth-token.guard";
+import { RoutePolicyGuard } from "../guards/route-policy.guard";
+import { BcryptService } from "../hashing/bcrypt.service";
+import { HashingServiceProtocol } from "../hashing/hashing.service";
 import { AuthService } from "./auth.service";
-import jwtConfig from "./config/jwt.config";
-import { BcryptService } from "./hashing/bcrypt.service";
-import { HashingServiceProtocol } from "./hashing/hashing.service";
-import { AuthTokenGuard } from "./guards/auth-token.guard";
-import { RoutePolicyGuard } from "./guards/route-policy.guard";
 
 @Global() // Torna este módulo disponível globalmente
 @Module({

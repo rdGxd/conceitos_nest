@@ -22,8 +22,8 @@ import { RoutePolicies } from "src/auth/enums/route-policies.enum";
 import { AuthAndPolicyGuard } from "src/auth/guards/auth-and-policy.guard";
 import { TokenPayloadParam } from "src/auth/params/token-payload.param";
 import { PaginationDto } from "src/common/dto/pagination.dto";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { CreateUserDto } from "../dto/create-user.dto";
+import { UpdateUserDto } from "../dto/update-user.dto";
 import { UsersService } from "./users.service";
 
 @Controller("users")
