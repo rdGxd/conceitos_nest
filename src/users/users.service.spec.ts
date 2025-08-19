@@ -114,5 +114,22 @@ describe("UsersService", () => {
 
       await expect(userService.create({} as any)).rejects.toThrow(ConflictException);
     });
+
+    it("Deve lançar um Error genérico", async () => {
+      jest.spyOn(userMapper, "toEntity").mockReturnValue({
+        email: "generic@example.com",
+        name: "Generic User",
+        password: "hashedPassword",
+      } as User);
+      jest.spyOn(hashingService, "hash").mockResolvedValue("hashedPassword");
+      jest.spyOn(userRepository, "create").mockReturnValue({
+        email: "generic@example.com",
+        name: "Generic User",
+        password: "hashedPassword",
+      } as User);
+      jest.spyOn(userRepository, "save").mockRejectedValue(new Error("Erro genérico"));
+
+      await expect(userService.create({} as any)).rejects.toThrow(new Error("Erro genérico"));
+    });
   });
 });
