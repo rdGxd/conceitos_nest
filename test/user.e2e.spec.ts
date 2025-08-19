@@ -1,4 +1,4 @@
-import { INestApplication } from "@nestjs/common";
+import { HttpStatus, INestApplication } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -9,8 +9,9 @@ import { GlobalConfigModule } from "src/global-config";
 import globalConfig from "src/global-config/global.config";
 import { MessagesModule } from "src/messages";
 import { UsersModule } from "src/users";
+import request from "supertest";
 
-describe("AppController (e2e)", () => {
+describe("UserController (e2e)", () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -42,7 +43,25 @@ describe("AppController (e2e)", () => {
     await app.close();
   });
 
-  it("/ (GET)", async () => {
-    expect(true).toBe(true);
+  describe("/users (POST)", () => {
+    it("Deve criar uma pessoa com sucesso", async () => {
+      const createUserDto = {
+        email: "admin@admin.com",
+        password: "teste",
+        name: "Teste",
+      };
+
+      const response = await request(app.getHttpServer()).post("/users").send(createUserDto).expect(HttpStatus.CREATED);
+
+      expect(response.body).toEqual({
+        email: createUserDto.email,
+        name: createUserDto.name,
+        picture: "",
+        id: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        routePolicies: expect.any(Array),
+      });
+    });
   });
 });
