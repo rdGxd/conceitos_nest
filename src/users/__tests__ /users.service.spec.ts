@@ -8,7 +8,7 @@ import { CreateUserDto } from "../dto/create-user.dto";
 import { ResponseUserDto } from "../dto/response-user.dto";
 import { User } from "../entities/user.entity";
 import { UserMapper } from "../mappers/user.mapper";
-import { UsersService } from "../users.service";
+import { UsersService } from "../service/users.service";
 
 describe("UsersService", () => {
   let userService: UsersService;

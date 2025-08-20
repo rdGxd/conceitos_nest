@@ -5,9 +5,9 @@ import { PaginationDto } from "src/common/dto/pagination.dto";
 import { MessageMapper } from "src/messages/mappers/message.mapper";
 import { UsersService } from "src/users";
 import { Repository } from "typeorm";
-import { CreateMessageDto } from "./dto/create-message.dto";
-import { UpdateMessageDto } from "./dto/update-message.dto";
-import { Message } from "./entities/message.entity";
+import { CreateMessageDto } from "../dto/create-message.dto";
+import { UpdateMessageDto } from "../dto/update-message.dto";
+import { Message } from "../entities/message.entity";
 
 @Injectable()
 export class MessagesService {

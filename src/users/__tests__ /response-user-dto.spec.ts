@@ -1,5 +1,5 @@
 import { validate } from "class-validator";
-import { ResponseUserDto } from "./response-user.dto";
+import { ResponseUserDto } from "../dto/response-user.dto";
 
 describe("ResponseUserDto", () => {
   it("should create an instance with all properties", () => {

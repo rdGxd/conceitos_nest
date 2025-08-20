@@ -1,5 +1,5 @@
 import { validate } from "class-validator";
-import { CreateUserDto } from "./create-user.dto";
+import { CreateUserDto } from "../dto/create-user.dto";
 
 describe("CreateUserDto", () => {
   it("deve validar um DTO válido", async () => {

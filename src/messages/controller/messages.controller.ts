@@ -6,9 +6,9 @@ import { AuthAndPolicyGuard } from "src/auth/guards/auth-and-policy.guard";
 import { TokenPayloadParam } from "src/auth/params/token-payload.param";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 import { ParseStringUUIDPipe } from "src/common/pipes/parse-string-uuid.pipe";
-import { CreateMessageDto } from "./dto/create-message.dto";
-import { UpdateMessageDto } from "./dto/update-message.dto";
-import { MessagesService } from "./messages.service";
+import { CreateMessageDto } from "../dto/create-message.dto";
+import { UpdateMessageDto } from "../dto/update-message.dto";
+import { MessagesService } from "../service/messages.service";
 
 @Controller("messages")
 @UseGuards(AuthAndPolicyGuard)

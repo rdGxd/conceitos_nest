@@ -13,9 +13,9 @@ import { HashingServiceProtocol } from "src/auth/hashing/hashing.service";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 import { UserMapper } from "src/users/mappers/user.mapper";
 import { Repository } from "typeorm";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { User } from "./entities/user.entity";
+import { CreateUserDto } from "../dto/create-user.dto";
+import { UpdateUserDto } from "../dto/update-user.dto";
+import { User } from "../entities/user.entity";
 
 @Injectable()
 export class UsersService {
