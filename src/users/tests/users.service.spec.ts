@@ -2,7 +2,8 @@ import { BadRequestException, ConflictException, ForbiddenException, NotFoundExc
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
-import { ADMIN_POLICIES, HashingServiceProtocol } from "src/auth";
+import { ADMIN_POLICIES } from "src/auth/enums/route-policies.enum";
+import { HashingServiceProtocol } from "src/auth/hashing/hashing.service";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { ResponseUserDto } from "../dto/response-user.dto";

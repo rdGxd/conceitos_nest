@@ -1,15 +1,3 @@
 {
-  "cSpell.words": ["AUTOLOADENTITIES", "DROPSCHEMA", "nestjs", "postgres", "TYPEORM"],
-  "sqltools.connections": [
-    {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5432,
-      "driver": "PostgreSQL",
-      "name": "postgres",
-      "database": "postgres",
-      "username": "postgres",
-      "password": "admin"
-    }
-  ]
+  "cSpell.words": ["AUTOLOADENTITIES", "DROPSCHEMA", "nestjs", "postgres", "TYPEORM"]
 }
