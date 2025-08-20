@@ -11,11 +11,22 @@ import { typeOrmAsyncConfig } from "./config/global/global-typeorm.config";
 import { MessagesModule } from "./messages/messages.module";
 import { UsersModule } from "./users/users.module";
 
+let envFilePath: string;
+if (process.env.NODE_ENV === "test") {
+  envFilePath = ".env.test";
+} else if (process.env.NODE_ENV === "development") {
+  envFilePath = ".env.development";
+} else if (process.env.NODE_ENV === "production") {
+  envFilePath = ".env.production";
+} else {
+  envFilePath = ".env";
+}
+
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [`.env.${process.env.NODE_ENV}`, ".env"],
       isGlobal: true,
+      envFilePath,
     }),
     ThrottlerModule.forRoot([
       {

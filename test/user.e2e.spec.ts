@@ -17,17 +17,10 @@ import request from "supertest";
 describe("UserController (e2e)", () => {
   let app: INestApplication;
 
-  beforeAll(() => {
-    process.env.NODE_ENV = "test";
-  });
-
   beforeEach(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [
-        ConfigModule.forRoot({
-          envFilePath: [`.env.test`],
-          isGlobal: true,
-        }),
+        ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env.test" }),
         GlobalConfigModule,
         TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
         ServeStaticModule.forRoot({
