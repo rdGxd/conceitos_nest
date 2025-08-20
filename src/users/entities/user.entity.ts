@@ -1,5 +1,5 @@
 import { IsEmail, MaxLength, MinLength } from "class-validator";
-import { RoutePolicies, USER_POLICIES } from "src/auth/enums/route-policies.enum";
+import { ADMIN_POLICIES, RoutePolicies } from "src/auth/enums/route-policies.enum";
 import { Message } from "src/messages/entities/message.entity";
 import {
   Column,
@@ -56,7 +56,7 @@ export class User {
   @Column({
     type: "enum",
     array: true,
-    default: [...USER_POLICIES],
+    default: [...ADMIN_POLICIES],
     enum: RoutePolicies,
   })
   routePolicies: RoutePolicies[];

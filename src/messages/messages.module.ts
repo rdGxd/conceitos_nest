@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { UsersModule } from "src/users/module/users.module";
-import { MessagesController } from "../controller/messages.controller";
-import { Message } from "../entities/message.entity";
-import { MessagesService } from "../service/messages.service";
+import { UsersModule } from "src/users/users.module";
+import { MessagesController } from "./controller/messages.controller";
+import { Message } from "./entities/message.entity";
+import { MessagesService } from "./service/messages.service";
 
 @Module({
   controllers: [MessagesController],

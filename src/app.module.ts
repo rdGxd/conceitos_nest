@@ -3,11 +3,11 @@ import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import path from "path";
-import { AuthModule } from "./auth/module/auth.module";
+import { AuthModule } from "./auth/auth.module";
 import { GlobalConfigModule } from "./config/global/global-config.module";
 import { typeOrmAsyncConfig } from "./config/global/global-typeorm.config";
-import { MessagesModule } from "./messages/module/messages.module";
-import { UsersModule } from "./users/module/users.module";
+import { MessagesModule } from "./messages/messages.module";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [
@@ -25,7 +25,6 @@ import { UsersModule } from "./users/module/users.module";
     MessagesModule,
     AuthModule,
   ],
-  controllers: [],
   providers: [],
   exports: [],
 })
