@@ -7,10 +7,10 @@ export class CreateMessageDto {
   @MinLength(5, { message: "Text must be at least 5 characters long" })
   @MaxLength(255, { message: "Text must be at most 255 characters long" })
   @ApiProperty({ example: "Hello, world!" })
-  readonly text: string;
+  text: string;
 
   @IsUUID()
   @IsNotEmpty({ message: "Recipient is required" })
   @ApiProperty({ example: "67890" })
-  readonly toId: string;
+  toId: string;
 }
