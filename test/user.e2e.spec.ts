@@ -41,7 +41,7 @@ describe("UserController (e2e)", () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-    app.useGlobalPipes(...globalPipes);
+    globalPipes(app);
 
     await app.init();
   });
