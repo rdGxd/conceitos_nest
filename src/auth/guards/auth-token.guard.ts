@@ -3,7 +3,7 @@ import type { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Request } from "express";
-import { User } from "src/users";
+import { User } from "src/users/entities/user.entity";
 import type { Repository } from "typeorm";
 import jwtConfig from "../config/jwt.config";
 import { REQUEST_TOKEN_PAYLOAD_KEY } from "../constants/auth.constants";

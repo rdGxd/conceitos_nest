@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 import { MessageMapper } from "src/messages/mappers/message.mapper";
-import { UsersService } from "src/users";
+import { UsersService } from "src/users/service/users.service";
 import { Repository } from "typeorm";
 import { CreateMessageDto } from "../dto/create-message.dto";
 import { UpdateMessageDto } from "../dto/update-message.dto";

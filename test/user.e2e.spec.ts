@@ -5,13 +5,13 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import path from "path";
 import request from "supertest";
-
-import { AuthModule } from "src/auth";
+import { AuthModule } from "src/auth/module/auth.module";
 import { GlobalConfigModule } from "src/config/global/global-config.module";
 import { globalPipes } from "src/config/global/global-pipes.config";
 import { typeOrmAsyncConfig } from "src/config/global/global-typeorm.config";
-import { MessagesModule } from "src/messages";
-import { CreateUserDto, UsersModule } from "src/users";
+import { MessagesModule } from "src/messages/module/messages.module";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { UsersModule } from "src/users/module/users.module";
 
 describe("UserController (e2e)", () => {
   let app: INestApplication;

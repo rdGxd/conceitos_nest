@@ -2,7 +2,7 @@ import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import type { ConfigType } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "src/users";
+import { User } from "src/users/entities/user.entity";
 import { Repository } from "typeorm";
 import jwtConfig from "../config/jwt.config";
 import { LoginDto } from "../dto/login.dto";
