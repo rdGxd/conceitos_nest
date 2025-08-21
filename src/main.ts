@@ -1,6 +1,5 @@
 import { NestFactory } from "@nestjs/core";
 import * as csurf from "csurf";
-import * as dotenv from "dotenv";
 import helmet from "helmet";
 import { AppModule } from "./app.module";
 import { globalPipes } from "./config/global/global-pipes.config";
@@ -10,7 +9,6 @@ async function bootstrap() {
   globalPipes(app);
 
   if (process.env.NODE_ENV === "production") {
-    dotenv.config({ path: ".env.production" });
     // HELMET -> cabeçalhos de segurança no protocolo HTTP
     app.use(helmet());
 
