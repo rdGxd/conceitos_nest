@@ -11,9 +11,9 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       username: configService.get<string>(`DATABASE_USERNAME`),
       password: configService.get<string>(`DATABASE_PASS`),
       database: configService.get<string>(`DATABASE_DATABASE`),
-      autoLoadEntities: Boolean(configService.get<string>(`DATABASE_AUTOLOADENTITIES`)),
-      synchronize: Boolean(configService.get<string>(`DATABASE_SYNCHRONIZE`)),
-      dropSchema: configService.get<string>("DATABASE_DROPSCHEMA") === "1",
+      autoLoadEntities: configService.get<string>("DATABASE_AUTOLOADENTITIES") === "true",
+      synchronize: configService.get<string>("DATABASE_SYNCHRONIZE") === "true",
+      dropSchema: configService.get<string>("DATABASE_DROPSCHEMA") === "true",
     };
   },
 };
