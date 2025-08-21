@@ -12,13 +12,24 @@ import { EmailModule } from "./email/email.module";
 import { MessagesModule } from "./messages/messages.module";
 import { UsersModule } from "./users/users.module";
 
-let envFilePath: string = "";
+let envFilePath: string;
 
-if (process.env.NODE_ENV === "test") envFilePath = ".env.test";
-
-if (process.env.NODE_ENV === "development") envFilePath = ".env.development";
-
-if (process.env.NODE_ENV === "production") envFilePath = ".env.production";
+switch (process.env.NODE_ENV) {
+  case "test":
+    envFilePath = ".env.test";
+    break;
+  case "development":
+    envFilePath = ".env.development";
+    break;
+  case "production":
+    envFilePath = ".env.production";
+    break;
+  default:
+    throw new Error(
+      "NODE_ENV não está configurado leia o .env.example ou faça as alterações nos scripts em package.json",
+    );
+}
+console.log(`Environment: ${process.env.NODE_ENV}`);
 
 @Module({
   imports: [
@@ -53,4 +64,3 @@ if (process.env.NODE_ENV === "production") envFilePath = ".env.production";
   exports: [],
 })
 export class AppModule {}
-console.log(`Environment: ${process.env.NODE_ENV}`);

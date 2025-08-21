@@ -9,13 +9,12 @@ import {
   Patch,
   Post,
   Query,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { REQUEST_TOKEN_PAYLOAD_KEY } from "src/auth/constants/auth.constants";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { SetRoutePolicy } from "src/auth/decorators/set-route-policy.decorator";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { RoutePolicies } from "src/auth/enums/route-policies.enum";
@@ -26,24 +25,32 @@ import { CreateUserDto } from "../dto/create-user.dto";
 import { UpdateUserDto } from "../dto/update-user.dto";
 import { UsersService } from "../service/users.service";
 
+@ApiTags("users")
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiOperation({ summary: "Cria um novo usuário" })
+  @ApiResponse({ status: 201, description: "Usuário criado com sucesso." })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
+  @ApiOperation({ summary: "Lista todos os usuários" })
+  @ApiResponse({ status: 200, description: "Lista de usuários." })
+  @ApiBearerAuth()
   @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.findAllUsers)
-  findAll(@Query() paginationDto: PaginationDto, @Req() request: Request) {
-    request[REQUEST_TOKEN_PAYLOAD_KEY];
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.usersService.findAll(paginationDto);
   }
 
   @Get(":id")
+  @ApiOperation({ summary: "Busca um usuário pelo ID" })
+  @ApiResponse({ status: 200, description: "Usuário encontrado." })
+  @ApiBearerAuth()
   @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.findOneUser)
   findOne(@Param("id") id: string) {
@@ -51,6 +58,9 @@ export class UsersController {
   }
 
   @Patch(":id")
+  @ApiOperation({ summary: "Atualiza um usuário" })
+  @ApiResponse({ status: 200, description: "Usuário atualizado." })
+  @ApiBearerAuth()
   @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.updateUser)
   update(
@@ -62,6 +72,9 @@ export class UsersController {
   }
 
   @Delete(":id")
+  @ApiOperation({ summary: "Remove um usuário" })
+  @ApiResponse({ status: 200, description: "Usuário removido." })
+  @ApiBearerAuth()
   @UseGuards(AuthAndPolicyGuard)
   @SetRoutePolicy(RoutePolicies.deleteUser)
   remove(@Param("id") id: string, @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto) {
@@ -69,6 +82,9 @@ export class UsersController {
   }
 
   @Post("upload-picture")
+  @ApiOperation({ summary: "Faz upload da foto do usuário" })
+  @ApiResponse({ status: 201, description: "Foto enviada com sucesso." })
+  @ApiBearerAuth()
   @UseGuards(AuthAndPolicyGuard)
   @UseInterceptors(FileInterceptor("file"))
   @SetRoutePolicy(RoutePolicies.uploadUser)
