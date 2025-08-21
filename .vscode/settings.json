@@ -1,3 +1,13 @@
 {
-  "cSpell.words": ["AUTOLOADENTITIES", "DROPSCHEMA", "nestjs", "postgres", "TYPEORM"]
+  "cSpell.words": [
+    "AUTOLOADENTITIES",
+    "DROPSCHEMA",
+    "mssql",
+    "mysql",
+    "nestjs",
+    "postgres",
+    "sqlite",
+    "TYPEORM",
+    "usuario"
+  ]
 }

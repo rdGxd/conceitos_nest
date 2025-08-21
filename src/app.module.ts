@@ -8,6 +8,7 @@ import path from "path";
 import { AuthModule } from "./auth/auth.module";
 import { GlobalConfigModule } from "./config/global/global-config.module";
 import { typeOrmAsyncConfig } from "./config/global/global-typeorm.config";
+import { EmailModule } from "./email/email.module";
 import { MessagesModule } from "./messages/messages.module";
 import { UsersModule } from "./users/users.module";
 
@@ -24,6 +25,7 @@ if (process.env.NODE_ENV === "test") {
 
 @Module({
   imports: [
+    EmailModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath,

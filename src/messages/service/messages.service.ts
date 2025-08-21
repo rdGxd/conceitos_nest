@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/commo
 import { InjectRepository } from "@nestjs/typeorm";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { PaginationDto } from "src/common/dto/pagination.dto";
+import { EmailService } from "src/email/email.service";
 import { MessageMapper } from "src/messages/mappers/message.mapper";
 import { UsersService } from "src/users/service/users.service";
 import { Repository } from "typeorm";
@@ -16,6 +17,7 @@ export class MessagesService {
     private readonly messagesRepository: Repository<Message>,
     // Injeta o UsersService para poder acessar os usuários
     private readonly usersService: UsersService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(createMessageDto: CreateMessageDto, tokenPayloadDto: TokenPayloadDto) {
@@ -30,6 +32,13 @@ export class MessagesService {
     // Cria a mensagem e logo apos isso salva no banco de dados
     const createdMessage = this.messagesRepository.create(newMessage);
     const savedMessage = await this.messagesRepository.save(createdMessage);
+
+    // Enviado email para a pessoa
+    await this.emailService.sendEmail(
+      to.email,
+      `Você recebeu uma mensagem de "${sender.name}" <${sender.email}>`,
+      createMessageDto.text,
+    );
 
     // retorna um DTO da mensagem criada
     return MessageMapper.toResponseDto(savedMessage);
