@@ -1,9 +1,13 @@
-import { PartialType } from "@nestjs/mapped-types";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
 import { CreateMessageDto } from "./create-message.dto";
 
 export class UpdateMessageDto extends PartialType(CreateMessageDto) {
-  // Adiciona a propriedade isRead como opcional
+  @ApiProperty({
+    description: "Define se a mensagem foi lida",
+    required: false,
+    example: true,
+  })
   @IsBoolean()
   @IsOptional()
   readonly isRead?: boolean;

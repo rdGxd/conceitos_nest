@@ -14,11 +14,12 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { SetRoutePolicy } from "src/auth/decorators/set-route-policy.decorator";
 import { TokenPayloadDto } from "src/auth/dto/token-payload.dto";
 import { RoutePolicies } from "src/auth/enums/route-policies.enum";
 import { AuthAndPolicyGuard } from "src/auth/guards/auth-and-policy.guard";
+import { AuthTokenGuard } from "src/auth/guards/auth-token.guard";
 import { TokenPayloadParam } from "src/auth/params/token-payload.param";
 import { PaginationDto } from "src/common/dto/pagination.dto";
 import { CreateUserDto } from "../dto/create-user.dto";
@@ -81,29 +82,38 @@ export class UsersController {
     return this.usersService.remove(id, tokenPayloadDto);
   }
 
-  @Post("upload-picture")
-  @ApiOperation({ summary: "Faz upload da foto do usuário" })
-  @ApiResponse({ status: 201, description: "Foto enviada com sucesso." })
+  @UseGuards(AuthTokenGuard)
   @ApiBearerAuth()
-  @UseGuards(AuthAndPolicyGuard)
+  @ApiConsumes("multipart/form-data") // Indica que o endpoint consome dados multipart
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+        },
+      },
+    },
+  }) // Indica que esperamos um arquivo no campo file e o formato é binário
   @UseInterceptors(FileInterceptor("file"))
-  @SetRoutePolicy(RoutePolicies.uploadUser)
+  @Post("upload-picture")
   async uploadPicture(
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: "jpeg|jpg|png|gif|webp",
+          fileType: /jpeg|jpg|png/g,
         })
         .addMaxSizeValidator({
-          maxSize: 10 * 1024 * 1024,
+          maxSize: 10 * (1024 * 1024),
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
         }),
     )
     file: Express.Multer.File,
-    @TokenPayloadParam() tokenPayloadDto: TokenPayloadDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
-    return this.usersService.uploadPicture(file, tokenPayloadDto);
+    return this.usersService.uploadPicture(file, tokenPayload);
   }
 }

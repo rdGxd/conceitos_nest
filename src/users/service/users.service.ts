@@ -102,6 +102,7 @@ export class UsersService {
     return userDto;
   }
 
+
   async uploadPicture(file: Express.Multer.File, tokenPayloadDto: TokenPayloadDto) {
     if (file.size < 1024) {
       throw new BadRequestException("File size is too small");

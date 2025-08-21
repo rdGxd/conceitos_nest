@@ -10,12 +10,12 @@ export class TokenPayloadDto {
   @ApiProperty({ description: "Timestamp de emissão do token", example: 1692633600 })
   iat: number;
 
-  @ApiProperty({ description: "Timestamp de expiração do token", example: 1692637200 })
+  @ApiProperty({ description: "Timestamp de expiração do token", example: 1692637200, minimum: 0 })
   exp: number;
 
   @ApiProperty({ description: "Audience do token", example: "app" })
   aud: string;
 
-  @ApiProperty({ description: "Issuer do token", example: "conceitos_nest" })
+  @ApiProperty({ description: "Issuer do token", example: "conceitos_nest", minLength: 1, maxLength: 100 })
   iss: string;
 }
