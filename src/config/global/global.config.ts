@@ -1,5 +1,5 @@
 import { registerAs } from "@nestjs/config";
-import { typeOrmAsyncConfig } from "./global-typeorm.config";
+import { typeOrmAsyncConfig } from "./typeorm.config";
 
 export default registerAs("globalConfig", () => {
   return {
